@@ -5,6 +5,46 @@
 
 @section('body-class', 'home-page')
 
+@push('styles')
+<style>
+    /* ── Spline Hero Integration ──────────────────────────────── */
+    .hero { position: relative; display: block; padding-bottom: 0; }
+
+    .spline-wrapper {
+        position: absolute; top: 0; right: 0;
+        width: 55%; height: 100%;
+        z-index: 1; overflow: hidden;
+    }
+    @media (max-width: 900px) {
+        .spline-wrapper { position: relative; width: 100%; height: 420px; margin-top: -2rem; }
+    }
+    .spline-frame { width: 100%; height: 100%; border: 0; display: block; pointer-events: auto; }
+    .spline-fade-left {
+        position: absolute; top: 0; left: 0; width: 35%; height: 100%;
+        background: linear-gradient(to right, var(--clr-bg-dark) 0%, transparent 100%);
+        pointer-events: none; z-index: 2;
+    }
+    .spline-hud-tl, .spline-hud-br {
+        position: absolute; width: 20px; height: 20px;
+        border-color: rgba(91,141,238,0.55); border-style: solid;
+        z-index: 3; pointer-events: none;
+    }
+    .spline-hud-tl { top: 12px; left: 12px; border-width: 1.5px 0 0 1.5px; }
+    .spline-hud-br { bottom: 12px; right: 12px; border-width: 0 1.5px 1.5px 0; }
+    .spline-meta {
+        position: absolute; font-family: 'Space Mono', monospace;
+        font-size: 0.62rem; letter-spacing: 0.1em;
+        color: rgba(255,255,255,0.55); pointer-events: none; z-index: 4; line-height: 1.6;
+    }
+    .spline-meta-tl { top: 14px; left: 40px; }
+    .spline-meta-br { bottom: 70px; right: 14px; text-align: right; }
+    .spline-meta span { display: block; }
+    .spline-meta .positive { color: #42d392; }
+    .hero-visual { display: none !important; }
+    .hero-content { position: relative; z-index: 5; grid-column: 1; }
+</style>
+@endpush
+
 @section('content')
 
 {{-- ============================================================
@@ -64,15 +104,24 @@
         </div>
     </div>
 
-    <!-- Hero Image / 3D Object -->
-    <div class="hero-visual" aria-hidden="true">
-        <div class="hero-object-wrapper">
-            <img src="{{ asset('images/hero_ice_crystal.png') }}" alt="Ice Crystal" class="hero-object" loading="eager">
-            <div class="hero-object-glow"></div>
-            <!-- HUD Labels around the object -->
-            <div class="hud-label hud-label-tl">ASSET_001<br>ACTIVE</div>
-            <div class="hud-label hud-label-br">CLICK TO<br>EXPLORE</div>
+    <!-- Spline 3D Scene — R4X Bot (interactive, mouse-tracking) -->
+    <div class="spline-wrapper" id="splineWrapper" aria-label="Interactive 3D character">
+        <div class="spline-fade-left" aria-hidden="true"></div>
+        <div class="spline-hud-tl" aria-hidden="true"></div>
+        <div class="spline-hud-br" aria-hidden="true"></div>
+        <div class="spline-meta spline-meta-tl" aria-hidden="true">
+            <span>ASSET_R4X</span>
+            <span>// INTERACTIVE</span>
         </div>
+        <div class="spline-meta spline-meta-br" aria-hidden="true">
+            <span>TEMP 29.44</span>
+            <span class="positive">+01.14</span>
+            <span style="margin-top:4px;opacity:0.6;">CLICK TO EXPLORE</span>
+        </div>
+        <iframe class="spline-frame"
+            src="https://my.spline.design/r4xbot-tjgQq8N0PhuJwRRozGCWJI4x/"
+            title="R4X Bot — Interactive 3D Scene"
+            loading="lazy" allow="fullscreen"></iframe>
     </div>
 
     <!-- Scroll Indicator -->
