@@ -34,6 +34,14 @@
     <!-- Main CSS -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
+    <!-- Lenis smooth scroll override -->
+    <style>
+        html.lenis, html.lenis body { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto !important; }
+        .integrations-band  { overflow: hidden; }
+        .integrations-logos { display: flex; flex-wrap: nowrap; width: max-content; gap: 1.5rem; }
+    </style>
+
     @stack('styles')
 </head>
 <body class="@yield('body-class', '')">
@@ -58,6 +66,16 @@
 
     <!-- Main JS -->
     <script src="{{ asset('js/app.js') }}"></script>
+
+    <!-- GSAP + ScrollTrigger CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <!-- Lenis Smooth Scroll CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+
+    <!-- Advanced Interactions (Lenis + GSAP) -->
+    <script src="{{ asset('js/interactions.js') }}"></script>
 
     @stack('scripts')
 </body>
