@@ -41,7 +41,26 @@
     .spline-meta span { display: block; }
     .spline-meta .positive { color: #42d392; }
     .hero-visual { display: none !important; }
-    .hero-content { position: relative; z-index: 5; grid-column: 1; }
+
+    /*
+     * FIX: Mouse-event pass-through
+     * .hero-content is a full-width transparent div at z-index 5 that
+     * silently blocks ALL mousemove events from reaching the Spline iframe.
+     * Fix: pointer-events:none on the container, restored on interactive children,
+     * and max-width:52% so it physically can't overlap the right-side Spline pane.
+     */
+    .hero-content {
+        position: relative; z-index: 5; grid-column: 1;
+        max-width: 52%;
+        pointer-events: none;
+    }
+    .hero-content a,
+    .hero-content button,
+    .hero-content input,
+    .hero-content label { pointer-events: auto; }
+    @media (max-width: 900px) {
+        .hero-content { max-width: 100%; pointer-events: auto; }
+    }
 </style>
 @endpush
 

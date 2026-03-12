@@ -99,11 +99,43 @@
         /* Remove old hero-visual from layout flow (we replaced it) */
         .hero-visual { display: none !important; }
 
-        /* Hero content needs a higher z-index than the Spline pane */
+        /*
+         * FIX: Mouse-event pass-through
+         * ─────────────────────────────────────────────────────────────
+         * .hero-content is a full-width div sitting at z-index 5.
+         * Even though it's visually transparent, its invisible hit-area
+         * blocks ALL mousemove events from reaching the Spline iframe
+         * below it — so the robot never sees the cursor.
+         *
+         * Solution:
+         *   1. Set pointer-events:none on .hero-content so mouse events
+         *      fall through to the iframe underneath.
+         *   2. Restore pointer-events:auto on every interactive child
+         *      (links, buttons) so CTAs stay clickable.
+         *   3. Cap max-width to 50% so the div cannot physically overlap
+         *      the right-side Spline pane at all.
+         */
         .hero-content {
             position: relative;
             z-index: 5;
             grid-column: 1;
+            max-width: 52%;          /* physically stays left of Spline */
+            pointer-events: none;    /* transparent to mouse — events fall through */
+        }
+        /* Re-enable clicks on anything interactive inside hero-content */
+        .hero-content a,
+        .hero-content button,
+        .hero-content input,
+        .hero-content label {
+            pointer-events: auto;
+        }
+
+        /* Responsive: on mobile hero-content goes full-width again */
+        @media (max-width: 900px) {
+            .hero-content {
+                max-width: 100%;
+                pointer-events: auto;
+            }
         }
 
         /* Push hero to single-column so content sits left, spline is absolute */
