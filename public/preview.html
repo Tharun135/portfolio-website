@@ -52,12 +52,54 @@
 
         /* The iframe itself */
         .spline-frame {
+            position: absolute;
+            top: 0; left: 0;
             width: 100%;
             height: 100%;
             border: 0;
             display: block;
-            /* allow mouse events through to the Spline scene */
             pointer-events: auto;
+        }
+
+        /* Replaced the wide block overlay mask with a precise button overlay mask */
+        .github-overlay-btn {
+            position: absolute;
+            /* Positioning these values explicitly to lay exactly on top of the 3D button */
+            bottom: 18%; 
+            left: 50%;
+            transform: translateX(-50%);
+            width: 320px;
+            height: 90px;
+            
+            /* Match the button style */
+            background: linear-gradient(90deg, #6c38ff 0%, #ff1c74 50%, #ff834e 100%);
+            border-radius: 50px;
+            
+            /* Text styling matching the image */
+            color: white;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+            
+            /* Flex layout for perfect centering */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            
+            /* Required so the button can be clicked over the iframe */
+            z-index: 10;
+            pointer-events: auto;
+            
+            /* Added drop shadow for some realism/depth */
+            box-shadow: 0 10px 30px rgba(255, 28, 116, 0.3);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .github-overlay-btn:hover {
+            transform: translateX(-50%) scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 28, 116, 0.4);
         }
 
         /* Dark left-edge gradient so text stays readable */
@@ -188,7 +230,6 @@
             <li><a href="#capabilities" class="mobile-nav-link">// Skills</a></li>
             <li><a href="#cta" class="mobile-nav-link">// Contact</a></li>
         </ul>
-        <a href="mailto:tharun135@gmail.com" class="btn btn-primary mt-4">Get In Touch</a>
     </div>
 </nav>
 
@@ -226,9 +267,6 @@
                     <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </a>
-            <a href="mailto:tharun135@gmail.com" class="btn btn-ghost" id="heroManifestoBtn">
-                <span>Get In Touch</span>
-            </a>
         </div>
         <div class="hero-data animate-fade-up delay-4">
             <span class="data-item">LOC: BENGALURU, IN</span>
@@ -257,17 +295,22 @@
         <div class="spline-meta spline-meta-br" aria-hidden="true">
             <span>TEMP <span id="splineTemp">29.44</span></span>
             <span class="positive" id="spineDelta">+01.14</span>
-            <span style="margin-top:4px; opacity:0.6;">CLICK TO EXPLORE</span>
         </div>
 
         <!-- The Spline iframe — fully interactive 3D scene -->
         <iframe
             class="spline-frame"
-            src="https://my.spline.design/r4xbot-tjgQq8N0PhuJwRRozGCWJI4x/"
-            title="R4X Bot — Interactive 3D Scene"
+            src="https://my.spline.design/happyrobotbutton-SW0tdyX1ILJmF4ex8zUnzhvH/"
+            title="Interactive 3D Scene"
             loading="lazy"
             allow="fullscreen"
+            frameborder="0"
         ></iframe>
+        
+        <!-- LinkedIn mask overlay button -->
+        <a href="https://www.linkedin.com/in/tharun-sebastian/" target="_blank" rel="noopener noreferrer" class="github-overlay-btn">
+            Get in touch
+        </a>
     </div>
 
     <div class="hero-scroll">
@@ -352,9 +395,9 @@
                     </svg>
                 </div>
                 <span class="feature-label">////// CAPABILITY_01</span>
-                <h3 class="feature-title">On-Chain IP</h3>
-                <p class="feature-desc">We forge intellectual property natively on the blockchain, creating assets that are provably owned, infinitely licensable, and community-driven from inception.</p>
-                <a href="#" class="feature-link">Explore →</a>
+                <h3 class="feature-title">API &amp; Developer Docs</h3>
+                <p class="feature-desc">Translating complex endpoints and code into clear, developer-friendly reference guides, SDK documentation, and tutorials that accelerate integration.</p>
+                <a href="#portfolio-preview" class="feature-link">View Samples →</a>
             </div>
             <div class="feature-visual">
                 <div class="feature-image-wrapper">
@@ -378,9 +421,9 @@
                     </svg>
                 </div>
                 <span class="feature-label">////// CAPABILITY_02</span>
-                <h3 class="feature-title">Community First</h3>
-                <p class="feature-desc">Our brand-and-participant model transforms passive consumers into active co-creators. Every holder becomes a stakeholder in the ecosystem's growth.</p>
-                <a href="#" class="feature-link">Explore →</a>
+                <h3 class="feature-title">End-User Manuals</h3>
+                <p class="feature-desc">Creating comprehensive, easy-to-follow user guides, knowledge bases, and UI copy that reduce support tickets and enhance user experience across SaaS platforms.</p>
+                <a href="#portfolio-preview" class="feature-link">View Samples →</a>
             </div>
             <div class="feature-visual">
                 <div class="feature-image-wrapper">
@@ -404,9 +447,9 @@
                     </svg>
                 </div>
                 <span class="feature-label">////// CAPABILITY_03</span>
-                <h3 class="feature-title">Cross-Media Expansion</h3>
-                <p class="feature-desc">From digital collectibles to physical products, animation to gaming — we expand IP across every medium to maximize cultural impact and community reach.</p>
-                <a href="#" class="feature-link">Explore →</a>
+                <h3 class="feature-title">Structured Authoring</h3>
+                <p class="feature-desc">Leveraging DITA XML, modular writing, and docs-as-code workflows to build scalable, single-sourced documentation systems for enterprise products.</p>
+                <a href="#portfolio-preview" class="feature-link">View Samples →</a>
             </div>
             <div class="feature-visual">
                 <div class="feature-image-wrapper">
@@ -477,7 +520,7 @@
                         <span class="portfolio-name">API Reference Guide</span>
                     </div>
                     <div class="portfolio-image-area">
-                        <img src="images/feature_network.png" alt="API Reference" loading="lazy" class="portfolio-img">
+                        <img src="images/api_reference_guide_tech.png" alt="API Reference" loading="lazy" class="portfolio-img">
                         <div class="portfolio-glow"></div>
                     </div>
                     <div class="portfolio-meta-bottom">
@@ -499,7 +542,7 @@
                         <span class="portfolio-name">End-User Manual</span>
                     </div>
                     <div class="portfolio-image-area">
-                        <img src="images/feature_data_stream.png" alt="User Manual" loading="lazy" class="portfolio-img">
+                        <img src="images/end_user_manual_tech.png" alt="User Manual" loading="lazy" class="portfolio-img">
                         <div class="portfolio-glow"></div>
                     </div>
                     <div class="portfolio-meta-bottom">
@@ -521,7 +564,7 @@
                         <span class="portfolio-name">Release Notes</span>
                     </div>
                     <div class="portfolio-image-area">
-                        <img src="images/portfolio_crystal_01.png" alt="Release Notes" loading="lazy" class="portfolio-img">
+                        <img src="images/release_notes_tech.png" alt="Release Notes" loading="lazy" class="portfolio-img">
                         <div class="portfolio-glow"></div>
                     </div>
                     <div class="portfolio-meta-bottom">
