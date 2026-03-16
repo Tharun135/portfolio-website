@@ -236,8 +236,9 @@ window.addEventListener('load', () => {
   });
 
   /* ══════════════════════════════════════════════════
-     13. INTEGRATIONS MARQUEE — infinite auto-scroll
+     13. INTEGRATIONS MARQUEE (Disabled - now static grid)
      ══════════════════════════════════════════════════ */
+  /*
   const logos = document.querySelector('.integrations-logos');
   if (logos) {
     // Duplicate items for seamless looping
@@ -257,6 +258,7 @@ window.addEventListener('load', () => {
       },
     });
   }
+  */
 
   /* ══════════════════════════════════════════════════
      14. TESTIMONIAL CARDS
