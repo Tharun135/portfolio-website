@@ -889,13 +889,15 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
   margin-bottom: 1.25rem;
 }
 .integrations-logos {
-  display: flex; align-items: center; justify-content: center; gap: 1.25rem; flex-wrap: wrap;
+  display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap;
+  width: 100%;
+  margin: 0 auto;
 }
 .integration-logo-item {
   font-family: var(--font-sans); font-weight: 700;
-  font-size: 0.9rem; color: var(--clr-primary-dim);
+  font-size: 0.85rem; color: var(--clr-primary-dim);
   letter-spacing: 0.05em;
-  padding: 0.5rem 1.25rem;
+  padding: 0.4rem 1rem;
   border: 1px solid var(--clr-border);
   border-radius: var(--r-sm);
   transition: all var(--t-fast);
