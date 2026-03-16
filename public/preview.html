@@ -181,7 +181,7 @@
             position: relative;
             z-index: 5;
             grid-column: 1;
-            max-width: 52%;          /* physically stays left of Spline */
+            max-width: 45%;          /* Reduced width to give Spline more room */
             pointer-events: none;    /* transparent to mouse — events fall through */
         }
         /* Re-enable clicks on anything interactive inside hero-content */
@@ -204,6 +204,12 @@
         .hero {
             display: block;
             padding-bottom: 0;
+        }
+
+        /* Shrink the title slightly so it fits in the narrower column */
+        .hero-headline {
+            font-size: clamp(2.4rem, 5.5vw, 4.8rem);
+            margin-right: 2rem;
         }
     </style>
 </head>
