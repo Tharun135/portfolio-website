@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tharun Sebastian — Technical Writer & Documentation Architect</title>
+    <title>Tharun Sebastian — Technical Writer | Docs-as-Code & Documentation Automation</title>
     <meta name="description" content="Tharun Sebastian is a Technical Writer specialising in SaaS & B2B documentation, API guides, DITA XML, and AI-assisted docs. Based in Bengaluru, India.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,9 +15,7 @@
         .lenis.lenis-smooth { scroll-behavior: auto !important; }
         .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
 
-        /* ── Marquee band overflow fix ────────────── */
-        .integrations-band  { overflow: hidden; }
-        .integrations-logos { display: flex; flex-wrap: nowrap; width: max-content; gap: 1.5rem; }
+
         /* ── Spline Hero Integration ──────────────────────────────── */
 
         /* Make hero full-bleed for the Spline scene */
@@ -65,7 +63,7 @@
         .github-overlay-btn {
             position: absolute;
             /* Positioning these values explicitly to lay exactly on top of the 3D button */
-            bottom: 18%; 
+            bottom: 20.8%; 
             left: 50%;
             transform: translateX(-50%);
             width: 320px;
@@ -145,6 +143,18 @@
         .spline-meta span { display: block; }
         .spline-meta .positive { color: #42d392; }
         .spline-meta .negative { color: #ff8080; }
+        
+        /* Mask to hide the "Built with Spline" badge in the bottom-right */
+        .spline-badge-mask {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 175px;
+            height: 65px;
+            background: #d6d9ea; /* Tonal match for the specific Spline scene background */
+            z-index: 1000;
+            pointer-events: none;
+        }
 
         /* Remove old hero-visual from layout flow (we replaced it) */
         .hero-visual { display: none !important; }
@@ -169,7 +179,7 @@
             position: relative;
             z-index: 5;
             grid-column: 1;
-            max-width: 52%;          /* physically stays left of Spline */
+            max-width: 45%;          /* Reduced width to give Spline more room */
             pointer-events: none;    /* transparent to mouse — events fall through */
         }
         /* Re-enable clicks on anything interactive inside hero-content */
@@ -192,6 +202,12 @@
         .hero {
             display: block;
             padding-bottom: 0;
+        }
+
+        /* Shrink the title slightly so it fits in the narrower column */
+        .hero-headline {
+            font-size: clamp(2.4rem, 5.5vw, 4.8rem);
+            margin-right: 2rem;
         }
     </style>
 </head>
@@ -252,9 +268,9 @@
             <span class="hero-status">● AVAILABLE FOR OPPORTUNITIES</span>
         </div>
         <h1 class="hero-headline animate-fade-up delay-1">
-            Technical<br>
-            <em class="hero-highlight">Writer &amp;</em><br>
-            Docs Architect
+            Technical Writer |<br>
+            <em class="hero-highlight">Docs-as-Code &amp;</em><br>
+            Documentation Automation
         </h1>
         <p class="hero-tagline animate-fade-up delay-2">
             Building scalable, user-focused documentation —<br>
@@ -273,7 +289,7 @@
             <span class="data-sep">|</span>
             <span class="data-item" id="heroDate">D 12.03.2026</span>
             <span class="data-sep">|</span>
-            <span class="data-item" id="heroTemp">EXP: 5+ YRS</span>
+            <span class="data-item" id="heroTemp">EXP: 7+ YRS</span>
         </div>
     </div>
 
@@ -311,6 +327,9 @@
         <a href="https://www.linkedin.com/in/tharun-sebastian/" target="_blank" rel="noopener noreferrer" class="github-overlay-btn">
             Get in touch
         </a>
+
+        <!-- Mask to cover the "Built with Spline" badge -->
+        <div class="spline-badge-mask"></div>
     </div>
 
     <div class="hero-scroll">
@@ -330,14 +349,10 @@
         </div>
         <div class="stat-divider">◆</div>
         <div class="stat-item animate-count">
-            <div class="stat-number">5+</div>
+            <div class="stat-number">7+</div>
             <div class="stat-label">Years Experience</div>
         </div>
-        <div class="stat-divider">◆</div>
-        <div class="stat-item animate-count">
-            <div class="stat-number">4</div>
-            <div class="stat-label">Companies</div>
-        </div>
+
         <div class="stat-divider">◆</div>
         <div class="stat-item animate-count">
             <div class="stat-number">500+</div>
@@ -362,7 +377,7 @@
                     <span class="text-accent">simple to understand.</span>
                 </h2>
                 <div class="intro-body animate-fade-up delay-1">
-                    <p>With a background in engineering and a passion for communication, I found my niche in technical writing. Over 5+ years in the SaaS B2B space, I've built end-user manuals, API documentation, release notes, and UI content for 20+ applications.</p>
+                    <p>With a background in engineering and a passion for communication, I found my niche in technical writing. Over 7+ years in the SaaS B2B space, I've built end-user manuals, API documentation, release notes, and UI content for 20+ applications.</p>
                     <p>I work in agile environments, collaborate with cross-functional teams, and contribute to internal style guides, content automation, and documentation pipelines. My focus is documentation that reduces support tickets and genuinely helps users.</p>
                 </div>
                 <a href="#features" class="btn btn-outline mt-4 animate-fade-up delay-2">My Expertise ↗</a>
@@ -471,7 +486,7 @@
         <div class="section-header text-center animate-fade-up">
             <span class="section-code">////// Experience</span>
             <h2 class="section-headline">Career<br>Journey</h2>
-            <p class="section-sub">Five years building documentation systems across enterprise SaaS, industrial tech, and engineering domains.</p>
+            <p class="section-sub">Seven years building documentation systems across enterprise SaaS, industrial tech, and engineering domains.</p>
         </div>
         <div class="steps-grid">
             <div class="step-card animate-fade-up">
@@ -513,6 +528,27 @@
             <p class="section-sub">A selection of document types and deliverables from across 5+ years of technical writing. (Share your images to add real samples here)</p>
         </div>
         <div class="portfolio-grid">
+            <div class="portfolio-card animate-fade-up">
+                <div class="portfolio-card-inner">
+                    <div class="portfolio-meta-top">
+                        <span class="portfolio-code">AI_TOOL_01</span>
+                        <span class="portfolio-name">DocScanner</span>
+                    </div>
+                    <div class="portfolio-image-area" style="pointer-events: auto;">
+                        <iframe src='https://my.spline.design/aichip-Sxv3jjiVNIYUzjRZqQXjKCny/' frameborder='0' width='100%' height='100%' style="border:0; pointer-events:auto; display:block;"></iframe>
+                    </div>
+                    <div class="portfolio-meta-bottom">
+                        <div class="portfolio-temp">
+                            <span>AI REVIEWER</span>
+                            <span class="positive">USER MANUALS</span>
+                        </div>
+                        <div class="portfolio-date-cta">
+                            <span>Automation Tool</span>
+                            <span class="portfolio-explore">EXPLORE AI →</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <a href="#" class="portfolio-card animate-fade-up">
                 <div class="portfolio-card-inner">
                     <div class="portfolio-meta-top">
@@ -605,25 +641,25 @@
             </div>
             <div class="capability-card animate-fade-up" style="transition-delay:0.1s">
                 <span class="cap-icon">⬡</span>
-                <h4 class="cap-name">Adobe FrameMaker</h4>
-                <p class="cap-desc">Structured publishing</p>
+                <h4 class="cap-name">VS Code</h4>
+                <p class="cap-desc">Authoring & scripting</p>
                 <div class="cap-status">ACTIVE</div>
             </div>
             <div class="capability-card animate-fade-up" style="transition-delay:0.2s">
                 <span class="cap-icon">◉</span>
-                <h4 class="cap-name">Adobe InDesign</h4>
-                <p class="cap-desc">Layout & design</p>
+                <h4 class="cap-name">Fluid Topics</h4>
+                <p class="cap-desc">Dynamic content publishing</p>
                 <div class="cap-status">ACTIVE</div>
             </div>
             <div class="capability-card animate-fade-up" style="transition-delay:0.3s">
                 <span class="cap-icon">▣</span>
-                <h4 class="cap-name">Git / GitHub</h4>
-                <p class="cap-desc">Docs-as-Code versioning</p>
+                <h4 class="cap-name">Git / GitLab</h4>
+                <p class="cap-desc">Version control & CI/CD</p>
                 <div class="cap-status">ACTIVE</div>
             </div>
             <div class="capability-card animate-fade-up" style="transition-delay:0.4s">
                 <span class="cap-icon">◈</span>
-                <h4 class="cap-name">JIRA / Confluence</h4>
+                <h4 class="cap-name">JIRA</h4>
                 <p class="cap-desc">Agile project tracking</p>
                 <div class="cap-status">ACTIVE</div>
             </div>
@@ -641,8 +677,8 @@
             </div>
             <div class="capability-card animate-fade-up" style="transition-delay:0.7s">
                 <span class="cap-icon">▣</span>
-                <h4 class="cap-name">Microsoft Office</h4>
-                <p class="cap-desc">Word, Excel, Visio</p>
+                <h4 class="cap-name">Docs-as-Code Ecosystem</h4>
+                <p class="cap-desc">Markdown, SSGs, pipelining</p>
                 <div class="cap-status">ACTIVE</div>
             </div>
         </div>
@@ -651,12 +687,12 @@
             <div class="integrations-logos">
                 <div class="integration-logo-item">Markdown</div>
                 <div class="integration-logo-item">Swagger / OpenAPI</div>
-                <div class="integration-logo-item">Confluence</div>
-                <div class="integration-logo-item">Adobe Illustrator</div>
+                <div class="integration-logo-item">Postman</div>
                 <div class="integration-logo-item">Scrum / Agile</div>
-                <div class="integration-logo-item">Python (NPTEL)</div>
+                <div class="integration-logo-item">Python</div>
                 <div class="integration-logo-item">Linux CLI</div>
-                <div class="integration-logo-item">SCADA</div>
+                <div class="integration-logo-item">Snagit</div>
+                <div class="integration-logo-item">Camtasia</div>
             </div>
         </div>
     </div>
@@ -795,12 +831,9 @@
     <div class="footer-bottom">
         <p class="footer-copyright">Tharun Sebastian © 2026 — Technical Writer, Bengaluru</p>
         <div class="footer-bottom-links">
-            <a href="mailto:tharu
-gloo, Inc. © 2026 All rights reserved.</p>
-        <div class="footer-bottom-links">
+            <a href="mailto:tharun135@gmail.com">Contact</a>
             <a href="#">Privacy</a>
             <a href="#">Terms</a>
-            <a href="#">Cookie Policy</a>
         </div>
         <div class="footer-ticker">
             <span class="ticker-item">// DATA.SYS ON.LINE 12.03.2026</span>
