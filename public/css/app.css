@@ -1291,4 +1291,6 @@ textarea.form-control { resize: vertical; min-height: 140px; }
   .capabilities-grid { grid-template-columns: 1fr 1fr; }
   .hero-actions { flex-direction: column; align-items: flex-start; }
   .cta-actions { flex-direction: column; align-items: center; }
+  .integrations-band { padding: 1.25rem 1rem; }
+  .integrations-logos { gap: 0.75rem; }
 }
