@@ -145,6 +145,18 @@
         .spline-meta span { display: block; }
         .spline-meta .positive { color: #42d392; }
         .spline-meta .negative { color: #ff8080; }
+        
+        /* Mask to hide the "Built with Spline" badge in the bottom-right */
+        .spline-badge-mask {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 140px;
+            height: 48px;
+            background: #dbe1f1; /* Matched to the Spline scene background color */
+            z-index: 100;
+            pointer-events: none;
+        }
 
         /* Remove old hero-visual from layout flow (we replaced it) */
         .hero-visual { display: none !important; }
@@ -311,6 +323,9 @@
         <a href="https://www.linkedin.com/in/tharun-sebastian/" target="_blank" rel="noopener noreferrer" class="github-overlay-btn">
             Get in touch
         </a>
+
+        <!-- Mask to cover the "Built with Spline" badge -->
+        <div class="spline-badge-mask"></div>
     </div>
 
     <div class="hero-scroll">
