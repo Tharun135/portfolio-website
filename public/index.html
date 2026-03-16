@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tharun Sebastian — Technical Writer & Documentation Architect</title>
+    <meta name="description" content="Tharun Sebastian is a Technical Writer specialising in SaaS & B2B documentation, API guides, DITA XML, and AI-assisted docs. Based in Bengaluru, India.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/app.css">
+    <style>
+        /* ── Lenis body override (smooth scroll) ─── */
+        html.lenis, html.lenis body { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto !important; }
+        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+
+        /* ── Marquee band overflow fix ────────────── */
+        .integrations-band  { overflow: hidden; }
+        .integrations-logos { display: flex; flex-wrap: nowrap; width: max-content; gap: 1.5rem; }
+        /* ── Spline Hero Integration ──────────────────────────────── */
+
+        /* Make hero full-bleed for the Spline scene */
+        .hero {
+            /* Switch to position:relative so the spline sits behind content */
+            position: relative;
+        }
+
+        /* Spline iframe wrapper — fills the right half of the hero */
+        .spline-wrapper {
+            position: absolute;
+            top: 0; right: 0;
+            width: 55%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        /* On mobile: full-bleed strip below the text */
+        @media (max-width: 900px) {
+            .spline-wrapper {
+                position: relative;
+                width: 100%;
+                height: 420px;
+                margin-top: -2rem;
+            }
+            .hero {
+                grid-template-columns: 1fr;
+                flex-direction: column;
+            }
+        }
+
+        /* The iframe itself */
+        .spline-frame {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            display: block;
+            pointer-events: auto;
+        }
+
+        /* Replaced the wide block overlay mask with a precise button overlay mask */
+        .github-overlay-btn {
+            position: absolute;
+            /* Positioning these values explicitly to lay exactly on top of the 3D button */
+            bottom: 18%; 
+            left: 50%;
+            transform: translateX(-50%);
+            width: 320px;
+            height: 90px;
+            
+            /* Match the button style */
+            background: linear-gradient(90deg, #6c38ff 0%, #ff1c74 50%, #ff834e 100%);
+            border-radius: 50px;
+            
+            /* Text styling matching the image */
+            color: white;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+            
+            /* Flex layout for perfect centering */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            
+            /* Required so the button can be clicked over the iframe */
+            z-index: 10;
+            pointer-events: auto;
+            
+            /* Added drop shadow for some realism/depth */
+            box-shadow: 0 10px 30px rgba(255, 28, 116, 0.3);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .github-overlay-btn:hover {
+            transform: translateX(-50%) scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 28, 116, 0.4);
+        }
+
+        /* Dark left-edge gradient so text stays readable */
+        .spline-fade-left {
+            position: absolute;
+            top: 0; left: 0;
+            width: 35%;
+            height: 100%;
+            background: linear-gradient(to right, var(--clr-bg-dark) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* HUD corner brackets around the Spline viewport */
+        .spline-hud-tl,
+        .spline-hud-br {
+            position: absolute;
+            width: 20px; height: 20px;
+            border-color: rgba(91,141,238,0.55);
+            border-style: solid;
+            z-index: 3;
+            pointer-events: none;
+        }
+        .spline-hud-tl { top: 12px; left: 12px; border-width: 1.5px 0 0 1.5px; }
+        .spline-hud-br { bottom: 12px; right: 12px; border-width: 0 1.5px 1.5px 0; }
+
+        /* HUD data labels floating over the scene */
+        .spline-meta {
+            position: absolute;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.1em;
+            color: rgba(255,255,255,0.55);
+            pointer-events: none;
+            z-index: 4;
+            line-height: 1.6;
+        }
+        .spline-meta-tl { top: 14px; left: 40px; }
+        .spline-meta-br {
+            bottom: 70px; right: 14px;
+            text-align: right;
+        }
+        .spline-meta span { display: block; }
+        .spline-meta .positive { color: #42d392; }
+        .spline-meta .negative { color: #ff8080; }
+
+        /* Remove old hero-visual from layout flow (we replaced it) */
+        .hero-visual { display: none !important; }
+
+        /*
+         * FIX: Mouse-event pass-through
+         * ─────────────────────────────────────────────────────────────
+         * .hero-content is a full-width div sitting at z-index 5.
+         * Even though it's visually transparent, its invisible hit-area
+         * blocks ALL mousemove events from reaching the Spline iframe
+         * below it — so the robot never sees the cursor.
+         *
+         * Solution:
+         *   1. Set pointer-events:none on .hero-content so mouse events
+         *      fall through to the iframe underneath.
+         *   2. Restore pointer-events:auto on every interactive child
+         *      (links, buttons) so CTAs stay clickable.
+         *   3. Cap max-width to 50% so the div cannot physically overlap
+         *      the right-side Spline pane at all.
+         */
+        .hero-content {
+            position: relative;
+            z-index: 5;
+            grid-column: 1;
+            max-width: 52%;          /* physically stays left of Spline */
+            pointer-events: none;    /* transparent to mouse — events fall through */
+        }
+        /* Re-enable clicks on anything interactive inside hero-content */
+        .hero-content a,
+        .hero-content button,
+        .hero-content input,
+        .hero-content label {
+            pointer-events: auto;
+        }
+
+        /* Responsive: on mobile hero-content goes full-width again */
+        @media (max-width: 900px) {
+            .hero-content {
+                max-width: 100%;
+                pointer-events: auto;
+            }
+        }
+
+        /* Push hero to single-column so content sits left, spline is absolute */
+        .hero {
+            display: block;
+            padding-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+<nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+        <a href="#" class="navbar-logo">
+            <svg class="logo-svg" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <text x="0" y="30" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="24" fill="currentColor" letter-spacing="1">TS</text>
+            </svg>
+            <span class="logo-tagline">// Tharun Sebastian</span>
+        </a>
+        <ul class="navbar-links">
+            <li><a href="#hero" class="nav-link active">// Home</a></li>
+            <li><a href="#about" class="nav-link">// About</a></li>
+            <li><a href="#portfolio-preview" class="nav-link">// Work</a></li>
+            <li><a href="#capabilities" class="nav-link">// Skills</a></li>
+            <li><a href="#cta" class="nav-link">// Contact</a></li>
+        </ul>
+        <div class="navbar-cta">
+            <a href="mailto:tharun135@gmail.com" class="btn btn-outline btn-sm">Hire Me</a>
+        </div>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+        <ul>
+            <li><a href="#hero" class="mobile-nav-link">// Home</a></li>
+            <li><a href="#about" class="mobile-nav-link">// About</a></li>
+            <li><a href="#portfolio-preview" class="mobile-nav-link">// Work</a></li>
+            <li><a href="#capabilities" class="mobile-nav-link">// Skills</a></li>
+            <li><a href="#cta" class="mobile-nav-link">// Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+<main id="main-content">
+
+<!-- ============================================================
+     HERO SECTION
+     ============================================================ -->
+<section class="hero" id="hero">
+    <canvas id="heroCanvas" class="hero-canvas"></canvas>
+    <div class="hero-grid"></div>
+    <div class="hud-bracket hud-tl"></div>
+    <div class="hud-bracket hud-tr"></div>
+    <div class="hud-bracket hud-bl"></div>
+    <div class="hud-bracket hud-br"></div>
+
+    <div class="hero-content container">
+        <div class="hero-label animate-fade-up">
+            <span class="hero-code">////// THARUN SEBASTIAN</span>
+            <span class="hero-status">● AVAILABLE FOR OPPORTUNITIES</span>
+        </div>
+        <h1 class="hero-headline animate-fade-up delay-1">
+            Technical<br>
+            <em class="hero-highlight">Writer &amp;</em><br>
+            Docs Architect
+        </h1>
+        <p class="hero-tagline animate-fade-up delay-2">
+            Building scalable, user-focused documentation —<br>
+            where clarity meets technology.
+        </p>
+        <div class="hero-actions animate-fade-up delay-3">
+            <a href="#portfolio-preview" class="btn btn-primary" id="heroExploreBtn">
+                <span>View My Work</span>
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none">
+                    <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </a>
+        </div>
+        <div class="hero-data animate-fade-up delay-4">
+            <span class="data-item">LOC: BENGALURU, IN</span>
+            <span class="data-sep">|</span>
+            <span class="data-item" id="heroDate">D 12.03.2026</span>
+            <span class="data-sep">|</span>
+            <span class="data-item" id="heroTemp">EXP: 5+ YRS</span>
+        </div>
+    </div>
+
+    <!-- ── Spline 3D Scene — R4X Bot (interactive, mouse-tracking) ── -->
+    <div class="spline-wrapper" id="splineWrapper" aria-label="Interactive 3D character">
+
+        <!-- Left edge fade keeps text readable -->
+        <div class="spline-fade-left" aria-hidden="true"></div>
+
+        <!-- HUD corner brackets -->
+        <div class="spline-hud-tl" aria-hidden="true"></div>
+        <div class="spline-hud-br" aria-hidden="true"></div>
+
+        <!-- HUD metadata labels -->
+        <div class="spline-meta spline-meta-tl" aria-hidden="true">
+            <span>ASSET_R4X</span>
+            <span>// INTERACTIVE</span>
+        </div>
+        <div class="spline-meta spline-meta-br" aria-hidden="true">
+            <span>TEMP <span id="splineTemp">29.44</span></span>
+            <span class="positive" id="spineDelta">+01.14</span>
+        </div>
+
+        <!-- The Spline iframe — fully interactive 3D scene -->
+        <iframe
+            class="spline-frame"
+            src="https://my.spline.design/happyrobotbutton-SW0tdyX1ILJmF4ex8zUnzhvH/"
+            title="Interactive 3D Scene"
+            loading="lazy"
+            allow="fullscreen"
+            frameborder="0"
+        ></iframe>
+        
+        <!-- LinkedIn mask overlay button -->
+        <a href="https://www.linkedin.com/in/tharun-sebastian/" target="_blank" rel="noopener noreferrer" class="github-overlay-btn">
+            Get in touch
+        </a>
+    </div>
+
+    <div class="hero-scroll">
+        <span class="scroll-text">SCROLL</span>
+        <div class="scroll-line"></div>
+    </div>
+</section>
+
+<!-- ============================================================
+     STATS SECTION
+     ============================================================ -->
+<section class="stats-section" id="stats">
+    <div class="stats-ticker">
+        <div class="stat-item animate-count">
+            <div class="stat-number">20+</div>
+            <div class="stat-label">Apps Documented</div>
+        </div>
+        <div class="stat-divider">◆</div>
+        <div class="stat-item animate-count">
+            <div class="stat-number">5+</div>
+            <div class="stat-label">Years Experience</div>
+        </div>
+        <div class="stat-divider">◆</div>
+        <div class="stat-item animate-count">
+            <div class="stat-number">4</div>
+            <div class="stat-label">Companies</div>
+        </div>
+        <div class="stat-divider">◆</div>
+        <div class="stat-item animate-count">
+            <div class="stat-number">500+</div>
+            <div class="stat-label">Connections</div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     ABOUT / INTRO SECTION
+     ============================================================ -->
+<section class="intro-section dark-section" id="about">
+    <div class="container">
+        <div class="intro-grid">
+            <div class="intro-label animate-slide-in">
+                <span class="section-code">////// About</span>
+            </div>
+            <div class="intro-content">
+                <h2 class="intro-headline animate-fade-up">
+                    Engineering-minded writer<br>
+                    who makes complex tech<br>
+                    <span class="text-accent">simple to understand.</span>
+                </h2>
+                <div class="intro-body animate-fade-up delay-1">
+                    <p>With a background in engineering and a passion for communication, I found my niche in technical writing. Over 5+ years in the SaaS B2B space, I've built end-user manuals, API documentation, release notes, and UI content for 20+ applications.</p>
+                    <p>I work in agile environments, collaborate with cross-functional teams, and contribute to internal style guides, content automation, and documentation pipelines. My focus is documentation that reduces support tickets and genuinely helps users.</p>
+                </div>
+                <a href="#features" class="btn btn-outline mt-4 animate-fade-up delay-2">My Expertise ↗</a>
+            </div>
+        </div>
+    </div>
+    <div class="intro-bg-image">
+        <img src="images/igloo_structure.png" alt="" loading="lazy">
+    </div>
+</section>
+
+<!-- ============================================================
+     FEATURES SECTION
+     ============================================================ -->
+<section class="features-section light-section" id="features">
+    <div class="container">
+        <div class="section-header text-center animate-fade-up">
+            <span class="section-code">////// What I Do</span>
+            <h2 class="section-headline">Core Documentation<br>Expertise</h2>
+            <p class="section-sub">Crafting clear, structured, and user-focused technical content across all formats and audiences.</p>
+        </div>
+
+        <!-- Feature 1 -->
+        <div class="feature-block animate-slide-in">
+            <div class="feature-content">
+                <div class="feature-icon-wrapper">
+                    <svg class="feature-icon" viewBox="0 0 64 64" fill="none">
+                        <polygon points="32,4 56,20 56,44 32,60 8,44 8,20" stroke="currentColor" stroke-width="2"/>
+                        <polygon points="32,14 46,22 46,38 32,46 18,38 18,22" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.1"/>
+                    </svg>
+                </div>
+                <span class="feature-label">////// CAPABILITY_01</span>
+                <h3 class="feature-title">API &amp; Developer Docs</h3>
+                <p class="feature-desc">Translating complex endpoints and code into clear, developer-friendly reference guides, SDK documentation, and tutorials that accelerate integration.</p>
+                <a href="#portfolio-preview" class="feature-link">View Samples →</a>
+            </div>
+            <div class="feature-visual">
+                <div class="feature-image-wrapper">
+                    <img src="images/feature_network.png" alt="Network visualization" loading="lazy" class="feature-img">
+                    <div class="feature-image-overlay"></div>
+                    <div class="feature-hud-label feature-hud-tl">ASSET_001</div>
+                    <div class="feature-hud-br"><span>TEMP 34.05</span><span style="color:#42d392">+01.14</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="feature-block feature-block--reverse animate-slide-in">
+            <div class="feature-content">
+                <div class="feature-icon-wrapper">
+                    <svg class="feature-icon" viewBox="0 0 64 64" fill="none">
+                        <circle cx="32" cy="20" r="10" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="14" cy="32" r="7" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="50" cy="32" r="7" stroke="currentColor" stroke-width="2"/>
+                        <path d="M22 45c0-5.5 4.5-10 10-10s10 4.5 10 10v4H22v-4z" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </div>
+                <span class="feature-label">////// CAPABILITY_02</span>
+                <h3 class="feature-title">End-User Manuals</h3>
+                <p class="feature-desc">Creating comprehensive, easy-to-follow user guides, knowledge bases, and UI copy that reduce support tickets and enhance user experience across SaaS platforms.</p>
+                <a href="#portfolio-preview" class="feature-link">View Samples →</a>
+            </div>
+            <div class="feature-visual">
+                <div class="feature-image-wrapper">
+                    <img src="images/feature_data_stream.png" alt="Data stream" loading="lazy" class="feature-img">
+                    <div class="feature-image-overlay"></div>
+                    <div class="feature-hud-label feature-hud-tl">ASSET_002</div>
+                    <div class="feature-hud-br"><span>TEMP 29.44</span><span style="color:#ff6b6b">-01.42</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="feature-block animate-slide-in">
+            <div class="feature-content">
+                <div class="feature-icon-wrapper">
+                    <svg class="feature-icon" viewBox="0 0 64 64" fill="none">
+                        <rect x="8" y="8" width="20" height="20" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <rect x="36" y="8" width="20" height="20" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <rect x="8" y="36" width="20" height="20" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <rect x="36" y="36" width="20" height="20" rx="2" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </div>
+                <span class="feature-label">////// CAPABILITY_03</span>
+                <h3 class="feature-title">Structured Authoring</h3>
+                <p class="feature-desc">Leveraging DITA XML, modular writing, and docs-as-code workflows to build scalable, single-sourced documentation systems for enterprise products.</p>
+                <a href="#portfolio-preview" class="feature-link">View Samples →</a>
+            </div>
+            <div class="feature-visual">
+                <div class="feature-image-wrapper">
+                    <img src="images/feature_network.png" alt="Network" loading="lazy" class="feature-img">
+                    <div class="feature-image-overlay"></div>
+                    <div class="feature-hud-label feature-hud-tl">ASSET_003</div>
+                    <div class="feature-hud-br"><span>TEMP 41.22</span><span style="color:#42d392">+03.77</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     HOW IT WORKS SECTION
+     ============================================================ -->
+<section class="how-section dark-section" id="how-it-works">
+    <div class="container">
+        <div class="section-header text-center animate-fade-up">
+            <span class="section-code">////// Experience</span>
+            <h2 class="section-headline">Career<br>Journey</h2>
+            <p class="section-sub">Five years building documentation systems across enterprise SaaS, industrial tech, and engineering domains.</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card animate-fade-up">
+                <div class="step-number">01</div>
+                <h3 class="step-title">Siemens Technology</h3>
+                <p class="step-desc">Technical Writer at Siemens Technology and Services Pvt. Ltd. — SaaS B2B documentation, agile workflows, style guides, and cross-functional collaboration.</p>
+                <div class="step-bracket"><span>[</span><span class="step-status">CURRENT</span><span>]</span></div>
+            </div>
+            <div class="step-card animate-fade-up" style="transition-delay:0.15s">
+                <div class="step-number">02</div>
+                <h3 class="step-title">L&T Technology Services</h3>
+                <p class="step-desc">Technical Writer at LTTS — documentation for engineering and industrial automation products, API guides, and release notes across complex product suites.</p>
+                <div class="step-bracket"><span>[</span><span class="step-status">COMPLETED</span><span>]</span></div>
+            </div>
+            <div class="step-card animate-fade-up" style="transition-delay:0.3s">
+                <div class="step-number">03</div>
+                <h3 class="step-title">ThoughtFocus</h3>
+                <p class="step-desc">Content Management and technical writing for SaaS platforms — end-user documentation, UI copy, and content strategy for multiple product lines.</p>
+                <div class="step-bracket"><span>[</span><span class="step-status">COMPLETED</span><span>]</span></div>
+            </div>
+            <div class="step-card animate-fade-up" style="transition-delay:0.45s">
+                <div class="step-number">04</div>
+                <h3 class="step-title">CADES-Studec</h3>
+                <p class="step-desc">Technical Author and Illustrator at CADES-Studec Technologies — aerospace and engineering technical illustrations, manuals, and structured documentation.</p>
+                <div class="step-bracket"><span>[</span><span class="step-status">COMPLETED</span><span>]</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     PORTFOLIO / WORK SAMPLES SECTION
+     ============================================================ -->
+<section class="portfolio-section light-section" id="portfolio-preview">
+    <div class="container">
+        <div class="section-header text-center animate-fade-up">
+            <span class="section-code">////// Work Samples</span>
+            <h2 class="section-headline">Documentation<br>Portfolio</h2>
+            <p class="section-sub">A selection of document types and deliverables from across 5+ years of technical writing. (Share your images to add real samples here)</p>
+        </div>
+        <div class="portfolio-grid">
+            <a href="#" class="portfolio-card animate-fade-up">
+                <div class="portfolio-card-inner">
+                    <div class="portfolio-meta-top">
+                        <span class="portfolio-code">DOC_SAMPLE_01</span>
+                        <span class="portfolio-name">API Reference Guide</span>
+                    </div>
+                    <div class="portfolio-image-area">
+                        <img src="images/api_reference_guide_tech.png" alt="API Reference" loading="lazy" class="portfolio-img">
+                        <div class="portfolio-glow"></div>
+                    </div>
+                    <div class="portfolio-meta-bottom">
+                        <div class="portfolio-temp">
+                            <span>REST / SDK</span>
+                            <span class="positive">DEVELOPER DOCS</span>
+                        </div>
+                        <div class="portfolio-date-cta">
+                            <span>Siemens / LTTS</span>
+                            <span class="portfolio-explore">VIEW SAMPLE →</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="portfolio-card animate-fade-up" style="transition-delay:0.2s">
+                <div class="portfolio-card-inner">
+                    <div class="portfolio-meta-top">
+                        <span class="portfolio-code">DOC_SAMPLE_02</span>
+                        <span class="portfolio-name">End-User Manual</span>
+                    </div>
+                    <div class="portfolio-image-area">
+                        <img src="images/end_user_manual_tech.png" alt="User Manual" loading="lazy" class="portfolio-img">
+                        <div class="portfolio-glow"></div>
+                    </div>
+                    <div class="portfolio-meta-bottom">
+                        <div class="portfolio-temp">
+                            <span>SaaS B2B</span>
+                            <span class="positive">USER GUIDE</span>
+                        </div>
+                        <div class="portfolio-date-cta">
+                            <span>20+ Applications</span>
+                            <span class="portfolio-explore">VIEW SAMPLE →</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="portfolio-card animate-fade-up" style="transition-delay:0.4s">
+                <div class="portfolio-card-inner">
+                    <div class="portfolio-meta-top">
+                        <span class="portfolio-code">DOC_SAMPLE_03</span>
+                        <span class="portfolio-name">Release Notes</span>
+                    </div>
+                    <div class="portfolio-image-area">
+                        <img src="images/release_notes_tech.png" alt="Release Notes" loading="lazy" class="portfolio-img">
+                        <div class="portfolio-glow"></div>
+                    </div>
+                    <div class="portfolio-meta-bottom">
+                        <div class="portfolio-temp">
+                            <span>AGILE / SCRUM</span>
+                            <span class="positive">CHANGELOG</span>
+                        </div>
+                        <div class="portfolio-date-cta">
+                            <span>Multi-product</span>
+                            <span class="portfolio-explore">VIEW SAMPLE →</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="text-center mt-5 animate-fade-up">
+            <a href="mailto:tharun135@gmail.com" class="btn btn-outline">Request Full Portfolio →</a>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     TOOLS & SKILLS SECTION
+     ============================================================ -->
+<section class="capabilities-section dark-section" id="capabilities">
+    <div class="container">
+        <div class="section-header text-center animate-fade-up">
+            <span class="section-code">////// Toolkit</span>
+            <h2 class="section-headline">Tools &amp;<br>Technologies</h2>
+            <p class="section-sub">Industry-standard documentation tools, authoring environments, and productivity platforms.</p>
+        </div>
+        <div class="capabilities-grid">
+            <div class="capability-card animate-fade-up">
+                <span class="cap-icon">◈</span>
+                <h4 class="cap-name">Oxygen XML Editor</h4>
+                <p class="cap-desc">DITA XML authoring</p>
+                <div class="cap-status">ACTIVE</div>
+            </div>
+            <div class="capability-card animate-fade-up" style="transition-delay:0.1s">
+                <span class="cap-icon">⬡</span>
+                <h4 class="cap-name">Adobe FrameMaker</h4>
+                <p class="cap-desc">Structured publishing</p>
+                <div class="cap-status">ACTIVE</div>
+            </div>
+            <div class="capability-card animate-fade-up" style="transition-delay:0.2s">
+                <span class="cap-icon">◉</span>
+                <h4 class="cap-name">Adobe InDesign</h4>
+                <p class="cap-desc">Layout & design</p>
+                <div class="cap-status">ACTIVE</div>
+            </div>
+            <div class="capability-card animate-fade-up" style="transition-delay:0.3s">
+                <span class="cap-icon">▣</span>
+                <h4 class="cap-name">Git / GitHub</h4>
+                <p class="cap-desc">Docs-as-Code versioning</p>
+                <div class="cap-status">ACTIVE</div>
+            </div>
+            <div class="capability-card animate-fade-up" style="transition-delay:0.4s">
+                <span class="cap-icon">◈</span>
+                <h4 class="cap-name">JIRA / Confluence</h4>
+                <p class="cap-desc">Agile project tracking</p>
+                <div class="cap-status">ACTIVE</div>
+            </div>
+            <div class="capability-card animate-fade-up" style="transition-delay:0.5s">
+                <span class="cap-icon">⬡</span>
+                <h4 class="cap-name">DITA XML</h4>
+                <p class="cap-desc">Structured content</p>
+                <div class="cap-status">ACTIVE</div>
+            </div>
+            <div class="capability-card animate-fade-up" style="transition-delay:0.6s">
+                <span class="cap-icon">◉</span>
+                <h4 class="cap-name">GitHub Copilot / AI</h4>
+                <p class="cap-desc">AI-assisted docs</p>
+                <div class="cap-status">ACTIVE</div>
+            </div>
+            <div class="capability-card animate-fade-up" style="transition-delay:0.7s">
+                <span class="cap-icon">▣</span>
+                <h4 class="cap-name">Microsoft Office</h4>
+                <p class="cap-desc">Word, Excel, Visio</p>
+                <div class="cap-status">ACTIVE</div>
+            </div>
+        </div>
+        <div class="integrations-band animate-fade-up">
+            <span class="integrations-label">////// Also worked with</span>
+            <div class="integrations-logos">
+                <div class="integration-logo-item">Markdown</div>
+                <div class="integration-logo-item">Swagger / OpenAPI</div>
+                <div class="integration-logo-item">Confluence</div>
+                <div class="integration-logo-item">Adobe Illustrator</div>
+                <div class="integration-logo-item">Scrum / Agile</div>
+                <div class="integration-logo-item">Python (NPTEL)</div>
+                <div class="integration-logo-item">Linux CLI</div>
+                <div class="integration-logo-item">SCADA</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     CERTIFICATIONS / LEARNING SECTION
+     ============================================================ -->
+<section class="testimonials-section light-section" id="testimonials">
+    <div class="container">
+        <div class="section-header text-center animate-fade-up">
+            <span class="section-code">////// Learning</span>
+            <h2 class="section-headline">Courses &amp;<br>Certifications</h2>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card animate-fade-up">
+                <div class="testimonial-quote-mark">◈</div>
+                <blockquote class="testimonial-quote">Fundamentals of Artificial Intelligence — NPTEL (IIT). Associated with L&amp;T Technology Services.</blockquote>
+                <div class="testimonial-author">
+                    <div class="author-avatar">AI</div>
+                    <div class="author-info">
+                        <strong class="author-name">Artificial Intelligence</strong>
+                        <span class="author-role">NPTEL — IIT</span>
+                    </div>
+                    <div class="author-company">NPTEL</div>
+                </div>
+            </div>
+            <div class="testimonial-card animate-fade-up" style="transition-delay:0.15s">
+                <div class="testimonial-quote-mark">◈</div>
+                <blockquote class="testimonial-quote">How to Write Using DITA XML — Udemy. Structured authoring for technical documentation at enterprise scale.</blockquote>
+                <div class="testimonial-author">
+                    <div class="author-avatar">DX</div>
+                    <div class="author-info">
+                        <strong class="author-name">DITA XML Writing</strong>
+                        <span class="author-role">Udemy</span>
+                    </div>
+                    <div class="author-company">Udemy</div>
+                </div>
+            </div>
+            <div class="testimonial-card animate-fade-up" style="transition-delay:0.3s">
+                <div class="testimonial-quote-mark">◈</div>
+                <blockquote class="testimonial-quote">Prompt Engineering for Generative AI + Advanced Prompt Engineering — LinkedIn Learning. Building AI-assisted documentation workflows.</blockquote>
+                <div class="testimonial-author">
+                    <div class="author-avatar">PE</div>
+                    <div class="author-info">
+                        <strong class="author-name">Prompt Engineering</strong>
+                        <span class="author-role">LinkedIn Learning</span>
+                    </div>
+                    <div class="author-company">LinkedIn</div>
+                </div>
+            </div>
+        </div>
+        <div class="logos-strip animate-fade-up">
+            <span class="logos-label">Also certified in:</span>
+            <div class="logos-row">
+                <div class="logo-pill">Python for Data Science</div>
+                <div class="logo-pill">LLM — Generative AI</div>
+                <div class="logo-pill">GitHub Copilot</div>
+                <div class="logo-pill">Linux CLI</div>
+                <div class="logo-pill">Git Essential Training</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     CTA SECTION
+     ============================================================ -->
+<section class="cta-section" id="cta">
+    <div class="container">
+        <div class="cta-inner animate-fade-up">
+            <div class="cta-label">////// Let's Work Together</div>
+            <h2 class="cta-headline">Open to Senior<br>Technical Writer Roles</h2>
+            <p class="cta-sub">Looking for opportunities in SaaS B2B documentation, API writing,<br>and AI-assisted documentation workflows. Bengaluru or remote.</p>
+            <div class="cta-actions">
+                <a href="mailto:tharun135@gmail.com" class="btn btn-primary btn-lg" id="ctaConnectBtn">Email Me</a>
+                <a href="https://www.linkedin.com/in/tharun-sebastian/" target="_blank" class="btn btn-ghost btn-lg" id="ctaExploreBtn">LinkedIn Profile</a>
+            </div>
+        </div>
+    </div>
+    <div class="cta-bg-visual">
+        <div class="cta-orb cta-orb-1"></div>
+        <div class="cta-orb cta-orb-2"></div>
+    </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <a href="#" class="footer-logo">TS</a>
+            <span class="footer-tagline">// Tharun Sebastian</span>
+            <p class="footer-company">Technical Writer<br>Bengaluru, India</p>
+            <p class="footer-mission">Building scalable, user-focused documentation that bridges the gap between technology and the people who use it.</p>
+        </div>
+        <div class="footer-col">
+            <h4 class="footer-heading">////// Navigate</h4>
+            <ul class="footer-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#features">Expertise</a></li>
+                <li><a href="#how-it-works">Experience</a></li>
+                <li><a href="#portfolio-preview">Work Samples</a></li>
+                <li><a href="#capabilities">Tools</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4 class="footer-heading">////// Expertise</h4>
+            <ul class="footer-links">
+                <li><a href="#features">API Documentation</a></li>
+                <li><a href="#features">End-User Manuals</a></li>
+                <li><a href="#features">DITA XML</a></li>
+                <li><a href="#features">Docs-as-Code</a></li>
+                <li><a href="#features">AI-Assisted Docs</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4 class="footer-heading">////// Connect</h4>
+            <ul class="footer-social">
+                <li><a href="https://www.linkedin.com/in/tharun-sebastian/" target="_blank" class="social-link">
+                    <svg class="social-icon" viewBox="0 0 24 24" fill="none"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" fill="currentColor"/></svg>
+                    LinkedIn
+                </a></li>
+                <li><a href="mailto:tharun135@gmail.com" class="social-link">
+                    <svg class="social-icon" viewBox="0 0 24 24" fill="none"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="currentColor"/></svg>
+                    tharun135@gmail.com
+                </a></li>
+                <li><a href="tel:+919633568468" class="social-link">
+                    <svg class="social-icon" viewBox="0 0 24 24" fill="none"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" fill="currentColor"/></svg>
+                    +91 96335 68468
+                </a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p class="footer-copyright">Tharun Sebastian © 2026 — Technical Writer, Bengaluru</p>
+        <div class="footer-bottom-links">
+            <a href="mailto:tharu
+gloo, Inc. © 2026 All rights reserved.</p>
+        <div class="footer-bottom-links">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Cookie Policy</a>
+        </div>
+        <div class="footer-ticker">
+            <span class="ticker-item">// DATA.SYS ON.LINE 12.03.2026</span>
+        </div>
+    </div>
+</footer>
+
+<!-- Custom Cursor -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<script src="js/app.js"></script>
+
+<!-- GSAP + ScrollTrigger CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<!-- Lenis Smooth Scroll CDN -->
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+
+<!-- Advanced Interactions (Lenis + GSAP animations) -->
+<script src="js/interactions.js"></script>
+</body>
+</html>
