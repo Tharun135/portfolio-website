@@ -889,7 +889,7 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
   margin-bottom: 1.25rem;
 }
 .integrations-logos {
-  display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+  display: flex; align-items: center; justify-content: center; gap: 1.25rem; flex-wrap: wrap;
 }
 .integration-logo-item {
   font-family: var(--font-sans); font-weight: 700;
@@ -899,6 +899,7 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
   border: 1px solid var(--clr-border);
   border-radius: var(--r-sm);
   transition: all var(--t-fast);
+  white-space: nowrap;
 }
 .integration-logo-item:hover {
   color: var(--clr-text-h);
