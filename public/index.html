@@ -234,11 +234,11 @@
 
         .github-overlay-btn {
             position: absolute;
-            bottom: 21.8%; 
+            bottom: 19.5%;           /* Nudged down from 21.8% to cover the shadow and base */
             left: 50.4%;
             transform: translateX(-50%);
-            width: clamp(260px, 80%, 340px);
-            height: clamp(65px, 15%, 100px);
+            width: clamp(280px, 85%, 360px); /* Widened slightly to match the 3D base */
+            height: clamp(70px, 15%, 100px);
             background: linear-gradient(90deg, #6c38ff 0%, #ff1c74 50%, #ff834e 100%);
             border-radius: 50px;
             color: white;
@@ -251,7 +251,7 @@
             text-decoration: none;
             z-index: 20;
             pointer-events: auto;
-            box-shadow: 0 10px 30px rgba(255, 28, 116, 0.3);
+            box-shadow: 0 10px 40px rgba(255, 28, 116, 0.4);
             transition: transform 0.2s ease;
         }
 
