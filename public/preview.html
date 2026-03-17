@@ -234,24 +234,24 @@
 
         .github-overlay-btn {
             position: absolute;
-            bottom: 19.5%;           /* Nudged down from 21.8% to cover the shadow and base */
+            bottom: 17.5%;           /* Nudged down to center the taller banner */
             left: 50.4%;
             transform: translateX(-50%);
-            width: clamp(280px, 85%, 360px); /* Widened slightly to match the 3D base */
-            height: clamp(70px, 15%, 100px);
+            width: clamp(320px, 92%, 400px); /* Significantly widened to cover glow edges */
+            height: 115px;           /* Increased height for 100% masking of the 3D button */
             background: linear-gradient(90deg, #6c38ff 0%, #ff1c74 50%, #ff834e 100%);
-            border-radius: 50px;
+            border-radius: 60px;
             color: white;
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
-            font-size: clamp(1.2rem, 3vw, 1.6rem);
+            font-size: clamp(1.4rem, 4vw, 1.8rem);
             display: flex;
             align-items: center;
             justify-content: center;
             text-decoration: none;
             z-index: 20;
             pointer-events: auto;
-            box-shadow: 0 10px 40px rgba(255, 28, 116, 0.4);
+            box-shadow: 0 15px 50px rgba(255, 28, 116, 0.5); /* Stronger shadow to blend edges */
             transition: transform 0.2s ease;
         }
 
