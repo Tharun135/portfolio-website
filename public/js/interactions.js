@@ -44,21 +44,23 @@ window.addEventListener('load', () => {
   const hudBrackets = document.querySelectorAll('.hud-bracket');
 
   if (heroContent) {
-    // Explicitly set initial state to prevent blanks on navigation jumps
-    gsap.set(heroContent, { opacity: 1, y: 0 });
-
-    gsap.to(heroContent, {
-      scrollTrigger: { 
-        trigger: '.hero', 
-        start: 'top top', 
-        end: '60% top', 
-        scrub: true, // Switched to true (instant) for better jump-navigation sync
-        invalidateOnRefresh: true 
-      },
-      y: -70, 
-      opacity: 0, 
-      ease: 'none',
-    });
+    // fromTo ensures that GSAP explicitly knows and enforces the state at BOTH ends of the scroll range
+    gsap.fromTo(heroContent, 
+      { opacity: 1, y: 0 },
+      {
+        scrollTrigger: { 
+          trigger: '.hero', 
+          start: 'top top', 
+          end: '40% top', // Shorter range for more definitive fade
+          scrub: true,
+          invalidateOnRefresh: true 
+        },
+        y: -50, 
+        opacity: 0, 
+        ease: 'none',
+        immediateRender: true
+      }
+    );
   }
 
   // Spline moves at slower rate — true parallax depth
@@ -429,6 +431,15 @@ window.addEventListener('load', () => {
 
   // Monitor for hash changes (common in hash-based navigation to Home)
   window.addEventListener('hashchange', () => {
-    setTimeout(refreshScrollTrigger, 100);
+    refreshScrollTrigger();
+    // Second pass after jump settle
+    setTimeout(refreshScrollTrigger, 150);
   });
+
+  // Global "navigation" fix: check if we are at top and something is hidden
+  setInterval(() => {
+    if (window.scrollY < 10 && heroContent && gsap.getProperty(heroContent, 'opacity') < 0.1) {
+      gsap.set(heroContent, { opacity: 1, y: 0 });
+    }
+  }, 1000);
 });
