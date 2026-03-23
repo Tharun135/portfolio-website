@@ -6,6 +6,10 @@
 
 /* ─── Wait for everything ─────────────────────────── */
 window.addEventListener('load', () => {
+  // Pre-emptively add in-view to everything so GSAP can calculate the final 'visible' state correctly
+  document.querySelectorAll('.animate-fade-up, .animate-slide-in, .animate-count').forEach(el => {
+    el.classList.add('in-view');
+  });
 
   /* ══════════════════════════════════════════════════
      1. LENIS SMOOTH SCROLL
@@ -40,9 +44,20 @@ window.addEventListener('load', () => {
   const hudBrackets = document.querySelectorAll('.hud-bracket');
 
   if (heroContent) {
+    // Explicitly set initial state to prevent blanks on navigation jumps
+    gsap.set(heroContent, { opacity: 1, y: 0 });
+
     gsap.to(heroContent, {
-      scrollTrigger: { trigger: '.hero', start: 'top top', end: '60% top', scrub: 1 },
-      y: -70, opacity: 0, ease: 'none',
+      scrollTrigger: { 
+        trigger: '.hero', 
+        start: 'top top', 
+        end: '60% top', 
+        scrub: true, // Switched to true (instant) for better jump-navigation sync
+        invalidateOnRefresh: true 
+      },
+      y: -70, 
+      opacity: 0, 
+      ease: 'none',
     });
   }
 
@@ -398,14 +413,22 @@ window.addEventListener('load', () => {
      22. REMOVE OLD CSS ANIMATION CLASS — hand off to GSAP
      ══════════════════════════════════════════════════ */
   // Pre-emptively add in-view to elements that are already visible
-  document.querySelectorAll('.animate-fade-up, .animate-slide-in, .animate-count').forEach(el => {
-    // Let GSAP own the animation; neutralize the CSS class system
-    el.classList.add('in-view');
-  });
 
   /* ══════════════════════════════════════════════════
      DONE — refresh ScrollTrigger after layout settle
      ══════════════════════════════════════════════════ */
-  setTimeout(() => ScrollTrigger.refresh(), 500);
+  
+  const refreshScrollTrigger = () => {
+    ScrollTrigger.refresh();
+    lenis.scrollTo(window.scrollY, { immediate: true });
+  };
 
+  // Handle various navigation/load scenarios
+  setTimeout(refreshScrollTrigger, 200);
+  setTimeout(refreshScrollTrigger, 1000);
+
+  // Monitor for hash changes (common in hash-based navigation to Home)
+  window.addEventListener('hashchange', () => {
+    setTimeout(refreshScrollTrigger, 100);
+  });
 });
