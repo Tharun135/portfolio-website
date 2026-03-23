@@ -68,45 +68,33 @@
             z-index: 10;
         }
 
-        /* Replaced the wide block overlay mask with a precise button overlay mask */
+        /* Small Get in Touch Button */
         .github-overlay-btn {
             position: absolute;
-            /* Anchored to the center-bottom of the stabilizer */
-            bottom: 24.2%; 
-            left: 50.4%;
-            transform: translateX(-50%);
-            width: clamp(280px, 80%, 340px);
-            height: clamp(70px, 15%, 100px);
-            
-            /* Match the button style */
+            top: 24px;
+            right: 24px;
+            width: auto;
+            height: 48px;
+            padding: 0 24px;
             background: linear-gradient(90deg, #6c38ff 0%, #ff1c74 50%, #ff834e 100%);
-            border-radius: 50px;
-            
-            /* Text styling matching the image */
+            border-radius: 30px;
             color: white;
             font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            font-size: clamp(1.2rem, 3vw, 1.6rem);
-            letter-spacing: -0.5px;
-            
-            /* Flex layout for perfect centering */
+            font-weight: 600;
+            font-size: 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
             text-decoration: none;
-            
-            /* Required so the button can be clicked over the iframe */
             z-index: 20;
             pointer-events: auto;
-            
-            /* Added drop shadow for some realism/depth */
-            box-shadow: 0 10px 30px rgba(255, 28, 116, 0.3);
+            box-shadow: 0 5px 20px rgba(255, 28, 116, 0.4);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .github-overlay-btn:hover {
-            transform: translateX(-50%) scale(1.02);
-            box-shadow: 0 15px 40px rgba(255, 28, 116, 0.4);
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 28, 116, 0.5);
         }
 
         /* Dark left-edge gradient so text stays readable */
@@ -234,28 +222,7 @@
             z-index: 10;
         }
 
-        .github-overlay-btn {
-            position: absolute;
-            bottom: 18.2%;           /* Micro-adjusted up for perfect top-edge seal */
-            left: 50.4%;
-            transform: translateX(-50%);
-            width: clamp(320px, 95%, 420px); /* Expanded width for absolute coverage */
-            height: 115px;           /* Maintain large height for 100% masking */
-            background: linear-gradient(90deg, #6c38ff 0%, #ff1c74 50%, #ff834e 100%);
-            border-radius: 60px;
-            color: white;
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            font-size: clamp(1.4rem, 4vw, 1.8rem);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            z-index: 20;
-            pointer-events: auto;
-            box-shadow: 0 15px 50px rgba(255, 28, 116, 0.5);
-            transition: transform 0.2s ease;
-        }
+
 
         /* Responsive */
         @media (max-width: 1100px) {
@@ -304,22 +271,18 @@
      ============================================================ -->
 <nav class="navbar" id="navbar">
     <div class="navbar-inner">
-        <a href="#" class="navbar-logo">
-            <svg class="logo-svg" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <text x="0" y="30" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="24" fill="currentColor" letter-spacing="1">TS</text>
-            </svg>
-            <span class="logo-tagline">// Tharun Sebastian</span>
+        <a href="#" class="navbar-logo" style="text-decoration: none;">
+            <span class="hero-code" style="color: var(--text-muted); font-family: 'Space Mono', monospace; font-size: 0.85rem; letter-spacing: 0.1em; display: inline-block; padding: 0.4rem 1rem; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 4px; background: rgba(0, 0, 0, 0.2);">////// THARUN SEBASTIAN</span>
         </a>
         <ul class="navbar-links">
             <li><a href="#hero" class="nav-link active">// Home</a></li>
             <li><a href="#about" class="nav-link">// About</a></li>
             <li><a href="#portfolio-preview" class="nav-link">// Work</a></li>
+            <li><a href="#ai-experiments" class="nav-link" style="color: #ff1c74;">// AI Experiments</a></li>
             <li><a href="#capabilities" class="nav-link">// Skills</a></li>
             <li><a href="#cta" class="nav-link">// Contact</a></li>
         </ul>
-        <div class="navbar-cta">
-            <a href="mailto:tharun135@gmail.com" class="btn btn-outline btn-sm">Hire Me</a>
-        </div>
+
         <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
             <span></span><span></span><span></span>
         </button>
@@ -329,6 +292,7 @@
             <li><a href="#hero" class="mobile-nav-link">// Home</a></li>
             <li><a href="#about" class="mobile-nav-link">// About</a></li>
             <li><a href="#portfolio-preview" class="mobile-nav-link">// Work</a></li>
+            <li><a href="#ai-experiments" class="mobile-nav-link" style="color: #ff1c74;">// AI Experiments</a></li>
             <li><a href="#capabilities" class="mobile-nav-link">// Skills</a></li>
             <li><a href="#cta" class="mobile-nav-link">// Contact</a></li>
         </ul>
@@ -349,10 +313,7 @@
     <div class="hud-bracket hud-br"></div>
 
     <div class="hero-content container">
-        <div class="hero-label animate-fade-up">
-            <span class="hero-code">////// THARUN SEBASTIAN</span>
-            <span class="hero-status">● AVAILABLE FOR OPPORTUNITIES</span>
-        </div>
+        <!-- Removed hero-label based on user request -->
         <h1 class="hero-headline animate-fade-up delay-1">
             Technical Writer |<br>
             <em class="hero-highlight">Docs-as-Code &amp;</em><br>
@@ -373,7 +334,7 @@
         <div class="hero-data animate-fade-up delay-4">
             <span class="data-item">LOC: BENGALURU, IN</span>
             <span class="data-sep">|</span>
-            <span class="data-item" id="heroDate">D 12.03.2026</span>
+            <span class="data-item" id="heroDate">D 23.03.2026</span>
             <span class="data-sep">|</span>
             <span class="data-item" id="heroTemp">EXP: 7+ YRS</span>
         </div>
@@ -402,18 +363,15 @@
         <!-- The Spline iframe — fully interactive 3D scene -->
         <iframe
             class="spline-frame"
-            src="https://my.spline.design/happyrobotbutton-SW0tdyX1ILJmF4ex8zUnzhvH/"
+            src="https://my.spline.design/r4xbot-AoDulhrnZSyUol2dKhZaFKSY/"
             title="Interactive 3D Scene"
             loading="lazy"
             allow="fullscreen"
             frameborder="0"
         ></iframe>
         
-        <!-- LinkedIn mask overlay button -->
         <div class="banner-stabilizer">
-            <a href="https://www.linkedin.com/in/tharun-sebastian/" target="_blank" rel="noopener noreferrer" class="github-overlay-btn">
-                Get in touch
-            </a>
+            <a href="https://www.linkedin.com/in/tharun-sebastian/" target="_blank" class="github-overlay-btn">Get in touch</a>
         </div>
 
         <!-- Mask to cover the "Built with Spline" badge -->
@@ -489,7 +447,7 @@
         </div>
 
         <!-- Feature 1 -->
-        <div class="feature-block animate-slide-in">
+        <a href="https://tharun135.github.io/samples/api-reference/" target="_blank" class="feature-block animate-slide-in" style="text-decoration: none; color: inherit;">
             <div class="feature-content">
                 <div class="feature-icon-wrapper">
                     <svg class="feature-icon" viewBox="0 0 64 64" fill="none">
@@ -500,7 +458,7 @@
                 <span class="feature-label">////// CAPABILITY_01</span>
                 <h3 class="feature-title">API &amp; Developer Docs</h3>
                 <p class="feature-desc">Translating complex endpoints and code into clear, developer-friendly reference guides, SDK documentation, and tutorials that accelerate integration.</p>
-                <a href="#portfolio-preview" class="feature-link">View Samples →</a>
+                <span class="feature-link" style="display: inline-block;">View Samples →</span>
             </div>
             <div class="feature-visual">
                 <div class="feature-image-wrapper">
@@ -510,10 +468,10 @@
                     <div class="feature-hud-br"><span>TEMP 34.05</span><span style="color:#42d392">+01.14</span></div>
                 </div>
             </div>
-        </div>
+        </a>
 
         <!-- Feature 2 -->
-        <div class="feature-block feature-block--reverse animate-slide-in">
+        <a href="https://tharun135.github.io/samples/user-manual/" target="_blank" class="feature-block feature-block--reverse animate-slide-in" style="text-decoration: none; color: inherit;">
             <div class="feature-content">
                 <div class="feature-icon-wrapper">
                     <svg class="feature-icon" viewBox="0 0 64 64" fill="none">
@@ -526,7 +484,7 @@
                 <span class="feature-label">////// CAPABILITY_02</span>
                 <h3 class="feature-title">End-User Manuals</h3>
                 <p class="feature-desc">Creating comprehensive, easy-to-follow user guides, knowledge bases, and UI copy that reduce support tickets and enhance user experience across SaaS platforms.</p>
-                <a href="#portfolio-preview" class="feature-link">View Samples →</a>
+                <span class="feature-link" style="display: inline-block;">View Samples →</span>
             </div>
             <div class="feature-visual">
                 <div class="feature-image-wrapper">
@@ -536,10 +494,10 @@
                     <div class="feature-hud-br"><span>TEMP 29.44</span><span style="color:#ff6b6b">-01.42</span></div>
                 </div>
             </div>
-        </div>
+        </a>
 
         <!-- Feature 3 -->
-        <div class="feature-block animate-slide-in">
+        <a href="https://tharun135.github.io/" target="_blank" class="feature-block animate-slide-in" style="text-decoration: none; color: inherit;">
             <div class="feature-content">
                 <div class="feature-icon-wrapper">
                     <svg class="feature-icon" viewBox="0 0 64 64" fill="none">
@@ -552,7 +510,7 @@
                 <span class="feature-label">////// CAPABILITY_03</span>
                 <h3 class="feature-title">Structured Authoring</h3>
                 <p class="feature-desc">Leveraging DITA XML, modular writing, and docs-as-code workflows to build scalable, single-sourced documentation systems for enterprise products.</p>
-                <a href="#portfolio-preview" class="feature-link">View Samples →</a>
+                <span class="feature-link" style="display: inline-block;">View Samples →</span>
             </div>
             <div class="feature-visual">
                 <div class="feature-image-wrapper">
@@ -562,7 +520,7 @@
                     <div class="feature-hud-br"><span>TEMP 41.22</span><span style="color:#42d392">+03.77</span></div>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
 </section>
 
@@ -616,28 +574,7 @@
             <p class="section-sub">A selection of document types and deliverables from across 7+ years of technical writing, showcasing a focus on precision, clarity, and developer experience.</p>
         </div>
         <div class="portfolio-grid">
-            <div class="portfolio-card animate-fade-up">
-                <div class="portfolio-card-inner">
-                    <div class="portfolio-meta-top">
-                        <span class="portfolio-code">AI_TOOL_01</span>
-                        <span class="portfolio-name">DocScanner</span>
-                    </div>
-                    <div class="portfolio-image-area" style="pointer-events: auto;">
-                        <iframe src='https://my.spline.design/aichip-Sxv3jjiVNIYUzjRZqQXjKCny/' frameborder='0' width='100%' height='100%' style="border:0; pointer-events:auto; display:block;"></iframe>
-                    </div>
-                    <div class="portfolio-meta-bottom">
-                        <div class="portfolio-temp">
-                            <span>AI REVIEWER</span>
-                            <span class="positive">USER MANUALS</span>
-                        </div>
-                        <div class="portfolio-date-cta">
-                            <span>Automation Tool</span>
-                            <a href="https://my.spline.design/aichip-Sxv3jjiVNIYUzjRZqQXjKCny/" target="_blank" class="portfolio-explore">EXPLORE AI →</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <a href="images/api_reference_guide_tech.png" target="_blank" class="portfolio-card animate-fade-up">
+            <a href="https://tharun135.github.io/samples/api-reference/" target="_blank" class="portfolio-card animate-fade-up">
                 <div class="portfolio-card-inner">
                     <div class="portfolio-meta-top">
                         <span class="portfolio-code">DOC_SAMPLE_01</span>
@@ -659,7 +596,7 @@
                     </div>
                 </div>
             </a>
-            <a href="images/end_user_manual_tech.png" target="_blank" class="portfolio-card animate-fade-up" style="transition-delay:0.2s">
+            <a href="https://tharun135.github.io/samples/user-manual/" target="_blank" class="portfolio-card animate-fade-up" style="transition-delay:0.2s">
                 <div class="portfolio-card-inner">
                     <div class="portfolio-meta-top">
                         <span class="portfolio-code">DOC_SAMPLE_02</span>
@@ -681,7 +618,7 @@
                     </div>
                 </div>
             </a>
-            <a href="images/release_notes_tech.png" target="_blank" class="portfolio-card animate-fade-up" style="transition-delay:0.4s">
+            <a href="https://tharun135.github.io/samples/release-notes/" target="_blank" class="portfolio-card animate-fade-up" style="transition-delay:0.4s">
                 <div class="portfolio-card-inner">
                     <div class="portfolio-meta-top">
                         <span class="portfolio-code">DOC_SAMPLE_03</span>
@@ -706,6 +643,67 @@
         </div>
         <div class="text-center mt-5 animate-fade-up">
             <a href="mailto:tharun135@gmail.com" class="btn btn-outline">Request Full Portfolio →</a>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     AI EXPERIMENTS SECTION
+     ============================================================ -->
+<section class="portfolio-section dark-section" id="ai-experiments" style="background: radial-gradient(circle at 10% 50%, rgba(255, 28, 116, 0.05) 0%, transparent 100%);">
+    <div class="container">
+        <div class="section-header text-center animate-fade-up">
+            <span class="section-code" style="color: #ff1c74;">////// AI Lab</span>
+            <h2 class="section-headline">AI Experiments</h2>
+            <p class="section-sub">A playground for intelligent documentation tools, LLM-assisted authoring, and automation research.</p>
+        </div>
+        <div class="portfolio-grid">
+            <!-- DocScanner Card - EXACT ORIGINAL -->
+            <a href="https://tharun135.github.io/samples/doc-scanner/" target="_blank" class="portfolio-card animate-fade-up">
+                <div class="portfolio-card-inner">
+                    <div class="portfolio-meta-top">
+                        <span class="portfolio-code">AI_TOOL_01</span>
+                        <span class="portfolio-name">DocScanner</span>
+                    </div>
+                    <div class="portfolio-image-area" style="pointer-events: auto; overflow: hidden; position: relative;">
+                        <iframe src='https://my.spline.design/aichip-Sxv3jjiVNIYUzjRZqQXjKCny/' frameborder='0' width='160%' height='160%' style="border:0; pointer-events:auto; display:block; position: absolute; top: -30%; left: -30%; transform: scale(0.625); transform-origin: center;"></iframe>
+                    </div>
+                    <div class="portfolio-meta-bottom">
+                        <div class="portfolio-temp">
+                            <span>AI REVIEWER</span>
+                            <span class="positive">USER MANUALS</span>
+                        </div>
+                        <div class="portfolio-date-cta">
+                            <span>Automation Tool</span>
+                            <span class="portfolio-explore">EXPLORE AI →</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Documentation Agent Orchestrator Card -->
+            <a href="https://documentation-agent-orchestrator.netlify.app/" target="_blank" class="portfolio-card animate-fade-up">
+                <div class="portfolio-card-inner">
+                    <div class="portfolio-meta-top">
+                        <span class="portfolio-code">AI_LAB_02</span>
+                        <span class="portfolio-name">Agent Orchestrator</span>
+                    </div>
+                    <div class="portfolio-image-area" style="pointer-events: auto; overflow: hidden; position: relative; background: #000;">
+                        <!-- Custom Spline: A rotating network sphere/orchestrator metaphor -->
+                        <iframe src='https://my.spline.design/neuralnetwork-C8Ym6f7G7S1L2R3X4' frameborder='0' width='160%' height='160%' style="border:0; pointer-events:auto; display:block; position: absolute; top: -30%; left: -30%; transform: scale(0.625); transform-origin: center; filter: hue-rotate(240deg);"></iframe>
+                    </div>
+                    <div class="portfolio-meta-bottom">
+                        <div class="portfolio-temp">
+                            <span style="color: #6c38ff;">AI GOVERNANCE</span>
+                            <span class="positive">ZERO HALLUCINATION</span>
+                        </div>
+                        <div class="portfolio-date-cta">
+                            <span>4-Phase Orchestration Tool</span>
+                            <span class="portfolio-explore" style="color: #6c38ff;">LAUNCH ORCHESTRATOR →</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
         </div>
     </div>
 </section>
@@ -924,7 +922,7 @@
             <a href="#">Terms</a>
         </div>
         <div class="footer-ticker">
-            <span class="ticker-item">// DATA.SYS ON.LINE 12.03.2026</span>
+            <span class="ticker-item">// DATA.SYS ON.LINE 23.03.2026</span>
         </div>
     </div>
 </footer>

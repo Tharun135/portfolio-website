@@ -19,6 +19,14 @@
         .spline-wrapper { position: relative; width: 100%; height: 420px; margin-top: -2rem; }
     }
     .spline-frame { width: 100%; height: 100%; border: 0; display: block; pointer-events: auto; }
+
+    /* Fade mask at the bottom to crop out the built-in Spline button seamlessly */
+    .spline-bottom-mask {
+        position: absolute; bottom: 0; left: 0; right: 0;
+        height: 25%;
+        background: linear-gradient(to bottom, transparent 0%, var(--clr-bg-dark) 80%);
+        z-index: 5; pointer-events: none;
+    }
     .spline-fade-left {
         position: absolute; top: 0; left: 0; width: 35%; height: 100%;
         background: linear-gradient(to right, var(--clr-bg-dark) 0%, transparent 100%);
@@ -138,9 +146,10 @@
             <span style="margin-top:4px;opacity:0.6;">CLICK TO EXPLORE</span>
         </div>
         <iframe class="spline-frame"
-            src="https://my.spline.design/r4xbot-tjgQq8N0PhuJwRRozGCWJI4x/"
+            src="https://my.spline.design/r4xbot-AoDulhrnZSyUol2dKhZaFKSY/"
             title="R4X Bot — Interactive 3D Scene"
             loading="lazy" allow="fullscreen"></iframe>
+        <div class="spline-bottom-mask" aria-hidden="true"></div>
     </div>
 
     <!-- Scroll Indicator -->
