@@ -1001,10 +1001,10 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
   margin-bottom: 1.5rem;
 }
 .cta-headline {
-  font-size: clamp(2.5rem, 7vw, 5.5rem);
-  font-weight: 700; line-height: 1.05;
-  letter-spacing: -0.03em; color: var(--clr-text-h);
-  margin-bottom: 1.5rem;
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 700; line-height: 1.1;
+  letter-spacing: -0.02em; color: var(--clr-text-h);
+  margin-bottom: 2rem;
 }
 .cta-sub {
   font-size: 1.05rem; color: var(--clr-text-dim);
