@@ -140,18 +140,57 @@
         .spline-meta span { display: block; }
         .spline-meta .positive { color: #42d392; }
         .spline-meta .negative { color: #ff8080; }
-        
-        /* Mask to hide the "Built with Spline" badge in the bottom-right */
-        .spline-badge-mask {
+
+        /* ── Floating Expertise Badges ── */
+        .hero-floating-badges {
             position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 175px;
-            height: 65px;
-            background: #d6d9ea; /* Tonal match for the specific Spline scene background */
-            z-index: 1000;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             pointer-events: none;
+            z-index: 15;
+            overflow: hidden;
         }
+
+        .floating-badge {
+            position: absolute;
+            display: inline-flex;
+            align-items: center;
+            padding: 0.6rem 1.2rem;
+            background: rgba(0, 0, 0, 0.45); /* Darker background for contrast */
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 100px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem; /* Slightly larger */
+            color: #ffffff; /* pure white for maximum readability */
+            letter-spacing: 0.08em;
+            animation: float-badge infinite ease-in-out;
+            white-space: nowrap;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 20;
+        }
+
+        .badge-1 { top: 25%; left: 10%; animation-duration: 6s; }
+        .badge-2 { top: 45%; left: 20%; animation-duration: 8s; animation-delay: -2s; }
+        .badge-3 { top: 65%; left: 5%; animation-duration: 7s; animation-delay: -4s; }
+        .badge-4 { top: 35%; right: 10%; animation-duration: 9s; animation-delay: -1s; }
+        .badge-5 { top: 55%; right: 15%; animation-duration: 7.5s; animation-delay: -3s; }
+        .badge-6 { top: 75%; right: 10%; animation-duration: 8.5s; animation-delay: -5s; }
+
+        @keyframes float-badge {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            50% { transform: translateY(-15px) rotate(1deg); }
+        }
+
+        .badge-dot {
+            width: 6px; height: 6px; /* Slightly larger */
+            background: #4deeea; /* Brighter neon cyan */
+            border-radius: 50%;
+            margin-right: 10px;
+            box-shadow: 0 0 12px #4deeea; /* stronger glow */
+        }
+        
+
 
         /* Remove old hero-visual from layout flow (we replaced it) */
         .hero-visual { display: none !important; }
@@ -360,7 +399,17 @@
             <span class="positive" id="spineDelta">+01.14</span>
         </div>
 
-        <!-- The Spline iframe — fully interactive 3D scene -->
+        <!-- Floating Badges Layer -->
+        <div class="hero-floating-badges" aria-hidden="true">
+            <div class="floating-badge badge-1"><span class="badge-dot"></span>DOCS_AS_CODE</div>
+            <div class="floating-badge badge-2"><span class="badge-dot" style="background: #38bdf8; box-shadow: 0 0 8px #38bdf8;"></span>REST API</div>
+            <div class="floating-badge badge-3"><span class="badge-dot"></span>GIT/GITHUB</div>
+            <div class="floating-badge badge-4"><span class="badge-dot" style="background: #ff1c74; box-shadow: 0 0 8px #ff1c74;"></span>AI_AGENT</div>
+            <div class="floating-badge badge-5"><span class="badge-dot"></span>MARKDOWN</div>
+            <div class="floating-badge badge-6"><span class="badge-dot"></span>DITA XML</div>
+        </div>
+
+        <!-- The Spline iframe — Reverting to Original Spherical R4X Bot Mascot -->
         <iframe
             class="spline-frame"
             src="https://my.spline.design/r4xbot-AoDulhrnZSyUol2dKhZaFKSY/"
@@ -374,8 +423,7 @@
             <a href="https://www.linkedin.com/in/tharun-sebastian/" target="_blank" class="github-overlay-btn">Get in touch</a>
         </div>
 
-        <!-- Mask to cover the "Built with Spline" badge -->
-        <div class="spline-badge-mask"></div>
+
     </div>
 
     <div class="hero-scroll">
@@ -692,7 +740,7 @@
                     </div>
                     <div class="portfolio-meta-bottom">
                         <div class="portfolio-temp">
-                            <span>AI REVIEWER</span>
+                            <span>RAG BASED AI REVIEWER</span>
                             <span class="positive">USER MANUALS</span>
                         </div>
                         <div class="portfolio-date-cta">
@@ -708,11 +756,12 @@
                 <div class="portfolio-card-inner">
                     <div class="portfolio-meta-top">
                         <span class="portfolio-code">AI_LAB_02</span>
-                        <span class="portfolio-name">Agent Orchestrator</span>
+                        <span class="portfolio-name">Documentation Agent Orchestrator</span>
                     </div>
-                    <div class="portfolio-image-area" style="pointer-events: auto; overflow: hidden; position: relative; background: #000;">
-                        <!-- Custom Spline: A rotating network sphere/orchestrator metaphor -->
-                        <iframe src='https://my.spline.design/neuralnetwork-C8Ym6f7G7S1L2R3X4' frameborder='0' width='160%' height='160%' style="border:0; pointer-events:auto; display:block; position: absolute; top: -30%; left: -30%; transform: scale(0.625); transform-origin: center; filter: hue-rotate(240deg);"></iframe>
+                    <div class="portfolio-image-area" style="overflow: hidden; position: relative; background: #000;">
+                        <!-- Static but high-impact Robotic Strategist for maximum reliability -->
+                        <img src="images/robotic_strategist.png" alt="Robotic Strategist" loading="lazy" class="portfolio-img" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;">
+                        <div class="portfolio-glow" style="background: radial-gradient(circle, rgba(108, 56, 255, 0.2) 0%, transparent 70%);"></div>
                     </div>
                     <div class="portfolio-meta-bottom">
                         <div class="portfolio-temp">
