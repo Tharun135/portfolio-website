@@ -765,8 +765,8 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
 
 .portfolio-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
 }
 .portfolio-card {
   display: block;
@@ -799,7 +799,7 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
   letter-spacing: 0.05em;
 }
 .portfolio-image-area {
-  position: relative; aspect-ratio: 4/3;
+  position: relative; aspect-ratio: 16/10;
   background: linear-gradient(135deg, #d0d5dd, #b8bec8);
   overflow: hidden; flex: 1;
 }
@@ -990,7 +990,7 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
    ---------------------------------------------------------------- */
 .cta-section {
   position: relative; overflow: hidden;
-  padding: clamp(5rem, 12vw, 10rem) 0;
+  padding: clamp(3rem, 7vw, 6rem) 0;
   background: var(--clr-bg-dark);
   text-align: center;
 }
@@ -998,17 +998,17 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
 .cta-label {
   font-family: var(--font-mono); font-size: 0.75rem;
   letter-spacing: 0.18em; color: var(--clr-accent);
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
 }
 .cta-headline {
   font-size: clamp(2.2rem, 5vw, 3.8rem);
   font-weight: 700; line-height: 1.1;
   letter-spacing: -0.02em; color: var(--clr-text-h);
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 .cta-sub {
   font-size: 1.05rem; color: var(--clr-text-dim);
-  line-height: 1.7; margin-bottom: 2.5rem;
+  line-height: 1.7; margin-bottom: 1.5rem;
 }
 .cta-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
 .cta-orb {
