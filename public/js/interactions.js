@@ -238,19 +238,69 @@ window.addEventListener('load', () => {
   });
 
   /* ══════════════════════════════════════════════════
-     10. HOW IT WORKS — Pinned steps that stagger in
+     10. CAREER JOURNEY — Scroll-driven Timeline Reveal
      ══════════════════════════════════════════════════ */
-  gsap.from('.step-number', {
-    scrollTrigger: { trigger: '.steps-grid', start: 'top 80%', toggleActions: 'play none none none' },
-    scale: 0, opacity: 0,
-    stagger: 0.12, duration: 0.5, ease: 'back.out(2.5)',
-  });
+  /* ══════════════════════════════════════════════════
+     10. CAREER JOURNEY — Stacked "History Peel" Animation
+     ══════════════════════════════════════════════════ */
+  const careerCards = gsap.utils.toArray('.career-card');
+  const careerSection = document.querySelector('.career-section');
 
-  gsap.from('.step-card', {
-    scrollTrigger: { trigger: '.steps-grid', start: 'top 75%', toggleActions: 'play none none none' },
-    opacity: 0, y: 60,
-    stagger: 0.13, duration: 0.9, ease: 'power3.out',
-  });
+  if (careerSection && careerCards.length) {
+    // Pin section
+    ScrollTrigger.create({
+      trigger: careerSection,
+      start: 'top top',
+      end: `+=${careerCards.length * 600}`, // Dynamic length based on card count
+      pin: true,
+      scrub: 1,
+      invalidateOnRefresh: true,
+    });
+
+    careerCards.forEach((card, i) => {
+      // Each card has its own animation lifecycle
+      // It starts at its "stacked" position and moves up/out 
+      // as the user scrolls into its specific range.
+      
+      const isLast = i === careerCards.length - 1;
+
+      gsap.to(card, {
+        scrollTrigger: {
+          trigger: careerSection,
+          start: `top+=${i * 600} top`,
+          end: `top+=${(i + 1) * 600} top`,
+          scrub: true,
+          onEnter: () => card.classList.add('active-card'),
+          onLeave: () => !isLast && card.classList.remove('active-card'),
+          onEnterBack: () => card.classList.add('active-card'),
+          onLeaveBack: () => card.classList.remove('active-card'),
+        },
+        y: -150,
+        opacity: 0.3,
+        scale: 1.1,
+        rotateX: 10,
+        filter: 'blur(10px)',
+        ease: 'none'
+      });
+      
+      // Also animate the scaling of the NEXT cards in the deck
+      // so they feel like they are "stepping forward"
+      careerCards.slice(i + 1).forEach((nextCard, nextIndex) => {
+        gsap.to(nextCard, {
+          scrollTrigger: {
+            trigger: careerSection,
+            start: `top+=${i * 600} top`,
+            end: `top+=${(i + 1) * 600} top`,
+            scrub: true,
+          },
+          y: '-=40', // Move up to take previous card's room
+          scale: '+=0.04', // Scale up to match previous card's scale
+          translateZ: '+=50', // Move forward in 3D space
+          ease: 'none'
+        });
+      });
+    });
+  }
 
   /* ══════════════════════════════════════════════════
      11. PORTFOLIO CARDS — Stagger reveal + Y-axis 3D tilt

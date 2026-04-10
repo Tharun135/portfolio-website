@@ -709,66 +709,149 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
 .feature-hud-br .negative { color: #ff6b6b; }
 
 /* ----------------------------------------------------------------
-   14. HOW IT WORKS SECTION
+   14. CAREER JOURNEY SECTION (Scroll-driven Timeline)
    ---------------------------------------------------------------- */
-.how-section { padding: clamp(5rem, 10vw, 8rem) 0; }
+.career-section {
+  padding: clamp(5rem, 15vw, 12rem) 0;
+  perspective: 1200px;
+}
 
-.steps-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 2px;
-  background: var(--clr-border);
-  border: 1px solid var(--clr-border);
+.career-section {
+  padding: clamp(5rem, 15vw, 12rem) 0;
+  perspective: 2000px; /* Enhanced perspective */
+}
+
+.career-cards-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  height: 700px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.career-cards {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+.career-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transform-style: preserve-3d;
+  transition: box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+/* Stack depth offsets */
+.career-card:nth-child(1) { z-index: 4; transform: translateY(0) scale(1) translateZ(0); }
+.career-card:nth-child(2) { z-index: 3; transform: translateY(40px) scale(0.96) translateZ(-50px); }
+.career-card:nth-child(3) { z-index: 2; transform: translateY(80px) scale(0.92) translateZ(-100px); }
+.career-card:nth-child(4) { z-index: 1; transform: translateY(120px) scale(0.88) translateZ(-150px); }
+
+.career-card-inner {
+  background: var(--clr-bg-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 3.5rem 3rem;
   border-radius: var(--r-lg);
+  position: relative;
   overflow: hidden;
 }
-.step-card {
-  background: var(--clr-bg-card);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.05);
-  padding: 2.5rem 2rem;
-  position: relative;
-  transition: background var(--t-mid), box-shadow var(--t-mid);
+
+.career-card.active-card .career-card-inner {
+  border-color: var(--clr-accent);
+  box-shadow: 0 0 60px rgba(168, 85, 247, 0.25);
 }
-.step-card:hover { background: var(--clr-surface-2); }
+
+.step-role-indicator {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--clr-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin-bottom: 0.5rem;
+  display: block;
+}
 
 .step-number {
   font-family: var(--font-mono);
-  font-size: 3rem;
+  font-size: 3.5rem;
   font-weight: 700;
-  color: rgba(91,141,238,0.15);
+  color: rgba(255, 255, 255, 0.05); /* Stealthy index */
   line-height: 1;
-  margin-bottom: 1rem;
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
   letter-spacing: -0.05em;
 }
-.step-connector {
-  position: absolute; top: 50%; right: -1px;
-  width: 20px; height: 2px;
-  background: var(--clr-accent);
-  display: none;
+
+.career-card-inner {
+  background: var(--clr-bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 3.5rem 3rem;
+  border-radius: var(--r-lg);
+  position: relative;
+  overflow: hidden;
 }
+
+.active-card {
+  box-shadow: 0 0 40px rgba(168, 85, 247, 0.4);
+  border-color: var(--clr-accent);
+}
+
+.step-number {
+  font-family: var(--font-mono);
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: rgba(168, 85, 247, 0.15);
+  line-height: 1;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.05em;
+}
+
 .step-title {
-  font-size: 1.3rem;
+  font-size: 1.8rem;
   font-weight: 700;
   color: var(--clr-text-h);
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
 }
+
 .step-desc {
-  font-size: 0.9rem;
-  line-height: 1.7;
+  font-size: 1.05rem;
+  line-height: 1.8;
   color: var(--clr-text-dim);
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
+
 .step-bracket {
-  display: flex; gap: 8px;
+  display: flex;
+  gap: 10px;
   font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.1em;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
   color: var(--clr-text-dim);
   align-items: center;
 }
-.step-status { color: #42d392; }
+
+.step-status {
+  color: #42d392;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .career-card-inner {
+    padding: 2.5rem 1.5rem;
+  }
+}
 
 /* ----------------------------------------------------------------
    15. PORTFOLIO SECTION
