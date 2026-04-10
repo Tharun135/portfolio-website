@@ -540,6 +540,7 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
   border-bottom: 1px solid var(--clr-border);
   padding: 2.5rem var(--container-pad);
 }
+
 .stats-ticker {
   max-width: var(--container-max);
   margin: 0 auto;
@@ -549,10 +550,12 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
   gap: 2rem;
   flex-wrap: wrap;
 }
+
 .stat-item {
   text-align: center;
   flex: 1 1 180px;
 }
+
 .stat-number {
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 700;
@@ -565,6 +568,7 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
 .stat-label {
   font-family: var(--font-mono);
   font-size: 0.72rem;
@@ -572,6 +576,7 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
   color: var(--clr-text-dim);
   text-transform: uppercase;
 }
+
 .stat-divider {
   color: var(--clr-border);
   font-size: 1.2rem;
