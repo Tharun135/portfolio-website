@@ -12,14 +12,14 @@ window.addEventListener('load', () => {
   });
 
   /* ══════════════════════════════════════════════════
-     1. LENIS SMOOTH SCROLL
+     1. LENIS SMOOTH SCROLL (Cinematic Inertia)
      ══════════════════════════════════════════════════ */
   const lenis = new Lenis({
-    duration: 1.5,
-    easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    duration: 1.8, // Increased for a more cinematic feel
+    easing: t => 1 - Math.pow(1 - t, 4), // Quartic ease-out for momentum
     smoothWheel: true,
     smoothTouch: false,
-    touchMultiplier: 2,
+    touchMultiplier: 1.5,
   });
 
   // Hook Lenis into GSAP ticker
@@ -44,23 +44,44 @@ window.addEventListener('load', () => {
   const hudBrackets = document.querySelectorAll('.hud-bracket');
 
   if (heroContent) {
-    // fromTo ensures that GSAP explicitly knows and enforces the state at BOTH ends of the scroll range
+    // HERO MORPH: Content scales down and fades as we scroll into the site
     gsap.fromTo(heroContent, 
-      { opacity: 1, y: 0 },
+      { opacity: 1, scale: 1, y: 0 },
       {
         scrollTrigger: { 
           trigger: '.hero', 
           start: 'top top', 
-          end: '40% top', // Shorter range for more definitive fade
-          scrub: true,
+          end: 'bottom top', 
+          scrub: 1.2,
           invalidateOnRefresh: true 
         },
-        y: -50, 
+        y: -150, 
+        scale: 0.85,
         opacity: 0, 
-        ease: 'none',
+        ease: 'power1.inOut',
         immediateRender: true
       }
     );
+  }
+
+  // BACKGROUND PARALLAX: The grid moves slower, creating depth
+  const heroGrid = document.querySelector('.hero-grid');
+  if (heroGrid) {
+    gsap.to(heroGrid, {
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1 },
+      yPercent: 30, // Moves in opposite direction or slower
+      ease: 'none',
+    });
+  }
+
+  // CANVAS PARALLAX: Particles drift away
+  if (heroCanvas) {
+    gsap.to(heroCanvas, {
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1.5 },
+      yPercent: -20,
+      opacity: 0.4,
+      ease: 'none',
+    });
   }
 
   // Spline moves at slower rate — true parallax depth
@@ -108,19 +129,22 @@ window.addEventListener('load', () => {
   gsap.utils.toArray('.section-code, .page-breadcrumb, .hero-code').forEach(el => {
     gsap.from(el, {
       scrollTrigger: { trigger: el, start: 'top 92%', toggleActions: 'play none none none' },
-      x: -40, opacity: 0, duration: 0.7, ease: 'power2.out',
+      x: -40, opacity: 0, duration: 1.2, ease: 'power2.out',
     });
   });
 
   /* ══════════════════════════════════════════════════
      6. SECTION HEADLINE CLIP-PATH REVEAL
-        (matches igloo.inc glitch/sweep style)
      ══════════════════════════════════════════════════ */
   gsap.utils.toArray('.section-headline, .intro-headline, .cta-headline, .page-headline').forEach(el => {
-    // Split into lines visually by wrapping content
     gsap.from(el, {
-      scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' },
-      opacity: 0, y: 55, duration: 1.1, ease: 'power3.out',
+      scrollTrigger: { 
+        trigger: el, 
+        start: 'top 95%', 
+        end: 'top 60%', 
+        scrub: 1.2 // Weighted scrub for smooth following
+      },
+      opacity: 0, y: 70, rotateX: -5, ease: 'power3.out',
     });
   });
 
@@ -180,9 +204,7 @@ window.addEventListener('load', () => {
   }
 
   /* ══════════════════════════════════════════════════
-     9. FEATURE BLOCKS — Slide in from sides
-        Left content slides from left, right visual from right
-        Image has inner parallax as you scroll through
+     9. FEATURE BLOCKS — Slide in from sides (Scrubbed)
      ══════════════════════════════════════════════════ */
   document.querySelectorAll('.feature-block').forEach(block => {
     const isReverse = block.classList.contains('feature-block--reverse');
@@ -192,16 +214,14 @@ window.addEventListener('load', () => {
 
     if (content) {
       gsap.from(content, {
-        scrollTrigger: { trigger: block, start: 'top 72%', toggleActions: 'play none none none' },
-        x: isReverse ? 70 : -70, opacity: 0,
-        duration: 1.1, ease: 'power3.out',
+        scrollTrigger: { trigger: block, start: 'top 85%', end: 'top 40%', scrub: 1 },
+        x: isReverse ? 70 : -70, opacity: 0, ease: 'power2.out',
       });
     }
     if (visual) {
       gsap.from(visual, {
-        scrollTrigger: { trigger: block, start: 'top 72%', toggleActions: 'play none none none' },
-        x: isReverse ? -70 : 70, opacity: 0,
-        duration: 1.1, delay: 0.15, ease: 'power3.out',
+        scrollTrigger: { trigger: block, start: 'top 85%', end: 'top 40%', scrub: 1 },
+        x: isReverse ? -70 : 70, opacity: 0, rotateY: isReverse ? -15 : 15, ease: 'power2.out',
       });
     }
 
@@ -236,20 +256,36 @@ window.addEventListener('load', () => {
      11. PORTFOLIO CARDS — Stagger reveal + Y-axis 3D tilt
      ══════════════════════════════════════════════════ */
   gsap.from('.portfolio-card', {
-    scrollTrigger: { trigger: '.portfolio-grid', start: 'top 78%', toggleActions: 'play none none none' },
-    opacity: 0, y: 80, rotateX: 8,
-    stagger: 0.18, duration: 1.1, ease: 'power3.out',
-    transformPerspective: 900,
+    scrollTrigger: { 
+      trigger: '.portfolio-grid', 
+      start: 'top 85%', 
+      end: 'top 30%', 
+      scrub: 1.5 // Significant weight to create that cinematic follow
+    },
+    opacity: 0, 
+    y: 180, 
+    rotateX: 25, // More aggressive 3D tilt
+    scale: 0.8,
+    stagger: 0.15, 
+    ease: 'power3.out',
   });
 
   /* ══════════════════════════════════════════════════
      12. CAPABILITIES GRID — Wave stagger from top-left
      ══════════════════════════════════════════════════ */
   gsap.from('.capability-card', {
-    scrollTrigger: { trigger: '.capabilities-grid', start: 'top 80%', toggleActions: 'play none none none' },
-    opacity: 0, scale: 0.82, y: 35,
-    stagger: { amount: 0.9, grid: 'auto', from: 'start' },
-    duration: 0.7, ease: 'back.out(1.5)',
+    scrollTrigger: { 
+      trigger: '.capabilities-grid', 
+      start: 'top 90%', 
+      end: 'top 40%', 
+      scrub: 1.2 
+    },
+    opacity: 0, 
+    scale: 0.6, 
+    y: 100, 
+    rotateY: -15,
+    stagger: 0.05, 
+    ease: 'power3.out',
   });
 
   /* ══════════════════════════════════════════════════

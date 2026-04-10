@@ -8,30 +8,30 @@
    1. DESIGN TOKENS & CSS VARIABLES
    ---------------------------------------------------------------- */
 :root {
-  /* Color Palette */
-  --clr-bg-dark:      #0d0e0f;
-  --clr-bg-mid:       #111214;
-  --clr-bg-card:      #161719;
-  --clr-bg-light:     #f4f5f6;
-  --clr-bg-white:     #ffffff;
-  --clr-surface:      #1a1c1f;
-  --clr-surface-2:    #222427;
+  /* Color Palette - Dark Futuristic & Neon */
+  --clr-bg-dark:      #050508;
+  --clr-bg-mid:       #0a0b12;
+  --clr-bg-card:      rgba(20, 20, 35, 0.4);
+  --clr-bg-light:     #080914; /* Converted to dark for full dark mode */
+  --clr-bg-white:     #0c0d1e;
+  --clr-surface:      rgba(255, 255, 255, 0.03);
+  --clr-surface-2:    rgba(255, 255, 255, 0.06);
 
-  --clr-primary:      #c8cdd4;
-  --clr-primary-dim:  #8a9099;
-  --clr-accent:       #5b8dee;
-  --clr-accent-2:     #7cd4fd;
-  --clr-accent-warm:  #f0c27f;
+  --clr-primary:      #e2e8f0;
+  --clr-primary-dim:  #94a3b8;
+  --clr-accent:       #a855f7; /* Neon Purple */
+  --clr-accent-2:     #22d3ee; /* Neon Cyan */
+  --clr-accent-warm:  #3b82f6; /* Neon Blue */
 
-  --clr-text-h:       #f0f2f5;
-  --clr-text:         #b8bec8;
-  --clr-text-dim:     #6b737e;
-  --clr-text-dark:    #1a1c1f;
-  --clr-text-dark-2:  #323840;
+  --clr-text-h:       #ffffff;
+  --clr-text:         #cbd5e1;
+  --clr-text-dim:     #64748b;
+  --clr-text-dark:    #e2e8f0; /* Adapted for forced dark mode */
+  --clr-text-dark-2:  #94a3b8;
 
-  --clr-border:       rgba(255,255,255,0.07);
-  --clr-border-light: rgba(0,0,0,0.08);
-  --clr-glow:         rgba(91,141,238,0.25);
+  --clr-border:       rgba(255, 255, 255, 0.1);
+  --clr-border-light: rgba(255, 255, 255, 0.15);
+  --clr-glow:         rgba(168, 85, 247, 0.4);
 
   /* Typography */
   --font-sans:  'Space Grotesk', 'Inter', system-ui, sans-serif;
@@ -76,7 +76,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto !important; /* Force auto so Lenis has exclusive control */
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
 }
@@ -88,6 +88,9 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   cursor: none;
+  /* Cinematic scrolling optimization */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body.light-body { background: var(--clr-bg-light); }
@@ -145,9 +148,11 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
    5. SCROLL PROGRESS BAR
    ---------------------------------------------------------------- */
 .scroll-progress {
-  position: fixed; top: 0; left: 0; height: 2px;
+  position: fixed; top: 0; left: 0; height: 3px;
   background: linear-gradient(90deg, var(--clr-accent), var(--clr-accent-2));
-  width: 0%; z-index: 9997;
+  width: 0%; z-index: 9999;
+  transform-origin: left;
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
   transition: width 0.1s linear;
 }
 
@@ -360,15 +365,17 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
    ---------------------------------------------------------------- */
 .hero {
   position: relative;
-  min-height: 100svh;
+  min-height: 100vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
   overflow: hidden;
   padding-top: var(--nav-h);
-  background: radial-gradient(ellipse 80% 60% at 60% 40%, rgba(91,141,238,0.08) 0%, transparent 70%),
-              radial-gradient(ellipse 60% 80% at 20% 80%, rgba(124,212,253,0.05) 0%, transparent 60%),
+  background: radial-gradient(ellipse 80% 60% at 60% 40%, rgba(168, 85, 247, 0.08) 0%, transparent 70%),
+              radial-gradient(ellipse 60% 80% at 20% 80%, rgba(34, 211, 238, 0.05) 0%, transparent 60%),
               var(--clr-bg-dark);
+  perspective: 1500px;
+  transform-style: preserve-3d;
 }
 .hero-canvas {
   position: absolute; inset: 0;
@@ -623,6 +630,8 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
   margin-bottom: 6rem;
   padding-bottom: 6rem;
   border-bottom: 1px solid var(--clr-border-light);
+  perspective: 1200px;
+  transform-style: preserve-3d;
 }
 .feature-block:last-child { border-bottom: none; margin-bottom: 0; }
 .feature-block--reverse { direction: rtl; }
@@ -714,10 +723,13 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
   overflow: hidden;
 }
 .step-card {
-  background: var(--clr-surface);
+  background: var(--clr-bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.05);
   padding: 2.5rem 2rem;
   position: relative;
-  transition: background var(--t-mid);
+  transition: background var(--t-mid), box-shadow var(--t-mid);
 }
 .step-card:hover { background: var(--clr-surface-2); }
 
@@ -767,15 +779,19 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.25rem;
+  perspective: 1200px;
 }
 .portfolio-card {
   display: block;
   border-radius: var(--r-lg);
   overflow: hidden;
   border: 1px solid var(--clr-border-light);
-  background: #fff;
+  background: var(--clr-bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   transition: transform var(--t-mid), box-shadow var(--t-mid), border-color var(--t-mid);
   position: relative;
+  transform-style: preserve-3d;
 }
 .portfolio-card:hover {
   transform: translateY(-6px);

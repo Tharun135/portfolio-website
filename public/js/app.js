@@ -172,7 +172,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 });
 
 /* ----------------------------------------------------------------
-   8. HERO CANVAS — Particle system
+   8. HERO CANVAS — Premium Mouse-Reactive Particle System
    ---------------------------------------------------------------- */
 (function initHeroCanvas() {
   const canvas = document.getElementById('heroCanvas');
@@ -180,7 +180,26 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   const ctx = canvas.getContext('2d');
 
   let W, H, particles = [];
-  const NUM = 80;
+  const NUM = 120; // More particles for density
+  let mouse = { x: null, y: null, radius: 150 };
+
+  // Track mouse globally since canvas has pointer-events: none
+  window.addEventListener('mousemove', (e) => {
+    // Only track if mouse is within hero section bounds (roughly top part)
+    if (e.clientY < H + 100) {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    } else {
+      mouse.x = null;
+      mouse.y = null;
+    }
+  });
+
+  window.addEventListener('mouseleave', () => {
+    mouse.x = null;
+    mouse.y = null;
+  });
 
   function resize() {
     W = canvas.width  = canvas.offsetWidth;
@@ -192,28 +211,66 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     reset() {
       this.x    = Math.random() * W;
       this.y    = Math.random() * H;
-      this.r    = Math.random() * 1.8 + 0.4;
-      this.vx   = (Math.random() - 0.5) * 0.3;
-      this.vy   = (Math.random() - 0.5) * 0.3 - 0.15;
-      this.life = Math.random();
-      this.maxLife = Math.random() * 0.5 + 0.5;
+      this.r    = Math.random() * 2 + 0.5;
+      this.baseX = this.x;
+      this.baseY = this.y;
+      this.vx   = (Math.random() - 0.5) * 0.5;
+      this.vy   = (Math.random() - 0.5) * 0.5;
+      this.density = Math.random() * 30 + 1;
+      
+      // Assign either purple or cyan base color
+      this.color = Math.random() > 0.5 ? '139, 92, 246' : '6, 182, 212';
     }
+    
     update() {
-      this.x += this.vx;
-      this.y += this.vy;
-      this.life += 0.003;
-      if (this.life > this.maxLife || this.x < 0 || this.x > W || this.y < 0 || this.y > H) {
-        this.reset();
-        this.y = H + 5;
+      this.baseX += this.vx;
+      this.baseY += this.vy;
+
+      // Boundary check for drifting base position
+      if (this.baseX < 0 || this.baseX > W) this.vx *= -1;
+      if (this.baseY < 0 || this.baseY > H) this.vy *= -1;
+
+      if (mouse.x != null) {
+        let dx = mouse.x - this.baseX;
+        let dy = mouse.y - this.baseY;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+        let forceDirectionX = dx / distance;
+        let forceDirectionY = dy / distance;
+        
+        let maxDistance = mouse.radius;
+        let force = (maxDistance - distance) / maxDistance;
+        let directionX = forceDirectionX * force * this.density;
+        let directionY = forceDirectionY * force * this.density;
+
+        if (distance < mouse.radius) {
+          // Attract towards mouse
+          this.x = this.baseX + directionX * 2;
+          this.y = this.baseY + directionY * 2;
+        } else {
+          // Return to base smoothly
+          if (this.x !== this.baseX) {
+            let dxBase = this.x - this.baseX;
+            this.x -= dxBase / 10;
+          }
+          if (this.y !== this.baseY) {
+            let dyBase = this.y - this.baseY;
+            this.y -= dyBase / 10;
+          }
+        }
+      } else {
+        this.x = this.baseX;
+        this.y = this.baseY;
       }
     }
+    
     draw() {
-      const t = this.life / this.maxLife;
-      const alpha = t < 0.2 ? t / 0.2 : t > 0.8 ? (1 - t) / 0.2 : 1;
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(91, 141, 238, ${alpha * 0.5})`;
+      ctx.fillStyle = `rgba(${this.color}, 0.8)`;
+      ctx.shadowBlur = 15; // Neon glow
+      ctx.shadowColor = `rgba(${this.color}, 1)`;
       ctx.fill();
+      ctx.shadowBlur = 0; // Reset for performance
     }
   }
 
@@ -223,12 +280,13 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         const dx = particles[i].x - particles[j].x;
         const dy = particles[i].y - particles[j].y;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 120) {
+        if (dist < 100) {
           ctx.beginPath();
           ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.strokeStyle = `rgba(91,141,238,${(1 - dist / 120) * 0.12})`;
-          ctx.lineWidth = 0.5;
+          // Mixed gradient color
+          ctx.strokeStyle = `rgba(139, 92, 246, ${(1 - dist / 100) * 0.2})`;
+          ctx.lineWidth = 1;
           ctx.stroke();
         }
       }
@@ -244,7 +302,8 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 
   window.addEventListener('resize', () => {
     resize();
-    particles.forEach(p => p.reset());
+    particles.length = 0;
+    for (let i = 0; i < NUM; i++) particles.push(new Particle());
   });
 
   resize();
@@ -312,10 +371,44 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
       if (tempEl) {
         const base = (29 + Math.random() * 2).toFixed(2);
         const delta = ((Math.random() - 0.5) * 2).toFixed(2);
-        tempEl.textContent = `TEMP ${base} / ${delta > 0 ? '+' : ''}${delta}`;
+        tempEl.textContent = `EXP ${base} / ${delta > 0 ? '+' : ''}${delta}`;
       }
     }
   }, 1000);
+})();
+
+/* ----------------------------------------------------------------
+   12. MAGNETIC CURSOR — High-fidelity attraction to interactive elements
+   ---------------------------------------------------------------- */
+(function initMagneticElements() {
+  const magneticEls = document.querySelectorAll('.btn, .nav-link, .portfolio-card');
+  
+  magneticEls.forEach(el => {
+    el.addEventListener('mousemove', e => {
+      const rect = el.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      
+      // Calculate pull based on card/button size
+      const strength = el.classList.contains('portfolio-card') ? 0.05 : 0.35;
+      
+      gsap.to(el, {
+        x: x * strength,
+        y: y * strength,
+        duration: 0.4,
+        ease: 'power2.out'
+      });
+    });
+
+    el.addEventListener('mouseleave', () => {
+      gsap.to(el, {
+        x: 0,
+        y: 0,
+        duration: 0.6,
+        ease: 'elastic.out(1, 0.5)'
+      });
+    });
+  });
 })();
 
 /* ----------------------------------------------------------------
