@@ -3,8 +3,7 @@
   "name": "portfolio",
   "compatibility_date": "2024-04-16",
   "assets": {
-    "directory": "public",
-    "binding": "ASSETS"
+    "directory": "public"
   },
   "observability": {
     "enabled": true
