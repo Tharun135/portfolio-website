@@ -247,58 +247,96 @@ window.addEventListener('load', () => {
   const careerSection = document.querySelector('.career-section');
 
   if (careerSection && careerCards.length) {
-    // Pin section
-    ScrollTrigger.create({
-      trigger: careerSection,
-      start: 'top top',
-      end: `+=${careerCards.length * 600}`, // Dynamic length based on card count
-      pin: true,
-      scrub: 1,
-      invalidateOnRefresh: true,
+
+    // Base stacking positions (must match design intent)
+    // Each card's slot: Y offset, scale, Z offset (z in GSAP = translateZ)
+    const stackBase = careerCards.map((_, i) => ({
+      y:     i * 30,
+      scale: 1 - i * 0.04,
+      z:     -(i * 40),
+    }));
+
+    // Set initial state via GSAP to ensure smooth start
+    careerCards.forEach((card, i) => {
+      gsap.set(card, {
+        filter:  i === 0 ? 'blur(0px)' : 'blur(4px)',
+        opacity: i === 0 ? 1 : 0.8,
+        y:       stackBase[i].y + 150, // Nudged down initially to animate in
+        scale:   stackBase[i].scale,
+        z:       stackBase[i].z,
+      });
+    });
+
+    // Each step occupies 1 unit of timeline time
+    const stepDuration = 1;
+    const leadIn = 0.5; // Small pause at the start to ensure visibility before flip
+    const careerTL = gsap.timeline({
+      scrollTrigger: {
+        trigger:            careerSection,
+        start:              'top top',
+        end:                `+=${(careerCards.length + leadIn) * 700}`, // px of scroll
+        pin:                true,
+        scrub:              1.2,
+        invalidateOnRefresh: true,
+      }
+    });
+
+    // 0. LEAD-IN: Move the entire stack UP into full view
+    careerCards.forEach((card, i) => {
+      careerTL.to(card, {
+        y: stackBase[i].y,
+        duration: leadIn,
+        ease: 'power2.out'
+      }, 0);
     });
 
     careerCards.forEach((card, i) => {
-      // Each card has its own animation lifecycle
-      // It starts at its "stacked" position and moves up/out 
-      // as the user scrolls into its specific range.
-      
       const isLast = i === careerCards.length - 1;
+      const tPos   = leadIn + (i * stepDuration);
 
-      gsap.to(card, {
-        scrollTrigger: {
-          trigger: careerSection,
-          start: `top+=${i * 600} top`,
-          end: `top+=${(i + 1) * 600} top`,
-          scrub: true,
-          onEnter: () => card.classList.add('active-card'),
-          onLeave: () => !isLast && card.classList.remove('active-card'),
-          onEnterBack: () => card.classList.add('active-card'),
-          onLeaveBack: () => card.classList.remove('active-card'),
-        },
-        y: -150,
-        opacity: 0.3,
-        scale: 1.1,
-        rotateX: 10,
-        filter: 'blur(10px)',
-        ease: 'none'
-      });
-      
-      // Also animate the scaling of the NEXT cards in the deck
-      // so they feel like they are "stepping forward"
-      careerCards.slice(i + 1).forEach((nextCard, nextIndex) => {
-        gsap.to(nextCard, {
-          scrollTrigger: {
-            trigger: careerSection,
-            start: `top+=${i * 600} top`,
-            end: `top+=${(i + 1) * 600} top`,
-            scrub: true,
-          },
-          y: '-=40', // Move up to take previous card's room
-          scale: '+=0.04', // Scale up to match previous card's scale
-          translateZ: '+=50', // Move forward in 3D space
-          ease: 'none'
+      if (!isLast) {
+        // ── 1. FLY the current card away ──────────────────────
+        careerTL.to(card, {
+          y:             -200,
+          opacity:       0,
+          scale:         1.08,
+          z:             100,
+          filter:        'blur(18px)',
+          pointerEvents: 'none',
+          ease:          'power1.inOut',
+          duration:      stepDuration,
+          onStart:          () => card.classList.remove('active-card'),
+          onReverseComplete: () => card.classList.add('active-card'),
+        }, tPos);
+
+        // ── 2. ADVANCE remaining cards to their new position ──
+        careerCards.slice(i + 1).forEach((nextCard, nextIndex) => {
+          // nextIndex 0 = immediately next card (becomes active)
+          const newSlot = nextIndex; 
+
+          careerTL.to(nextCard, {
+            y:       stackBase[newSlot].y,
+            scale:   stackBase[newSlot].scale,
+            z:       stackBase[newSlot].z,
+            filter:  newSlot === 0 ? 'blur(0px)' : 'blur(4px)',
+            opacity: newSlot === 0 ? 1           : 0.8,
+            ease:    'power1.inOut',
+            duration: stepDuration,
+            onStart:          () => newSlot === 0 && nextCard.classList.add('active-card'),
+            onReverseComplete: () => newSlot === 0 && nextCard.classList.remove('active-card'),
+          }, tPos);
         });
-      });
+
+      } else {
+        // Last card: ensure it becomes active when reached
+        careerTL.to(card, {
+          filter:   'blur(0px)',
+          opacity:  1,
+          duration: stepDuration * 0.1,
+          onStart:          () => card.classList.add('active-card'),
+          onReverseComplete: () => card.classList.remove('active-card'),
+        }, tPos);
+      }
     });
   }
 
@@ -510,6 +548,32 @@ window.addEventListener('load', () => {
     ScrollTrigger.refresh();
     lenis.scrollTo(window.scrollY, { immediate: true });
   };
+
+  // ─── Career Flip Cards Click Logic ───────────────────
+  document.querySelectorAll('.flip-card').forEach(card => {
+    card.addEventListener('click', () => {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // ─── Optional: Auto-flip teaser on scroll ───────────
+  gsap.utils.toArray('.flip-card').forEach((card, i) => {
+    ScrollTrigger.create({
+      trigger: card,
+      start: 'top 80%',
+      onEnter: () => {
+        // Only tease the first card when it becomes active
+        if (i === 0) {
+          gsap.delayedCall(1.2, () => {
+            if (!card.classList.contains('flipped')) {
+               card.classList.add('flipped');
+               gsap.delayedCall(2.2, () => card.classList.remove('flipped'));
+            }
+          });
+        }
+      }
+    });
+  });
 
   // Handle various navigation/load scenarios
   setTimeout(refreshScrollTrigger, 200);

@@ -717,13 +717,14 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
    14. CAREER JOURNEY SECTION (Scroll-driven Timeline)
    ---------------------------------------------------------------- */
 .career-section {
-  padding: clamp(5rem, 15vw, 12rem) 0;
-  perspective: 1200px;
-}
-
-.career-section {
-  padding: clamp(5rem, 15vw, 12rem) 0;
-  perspective: 2000px; /* Enhanced perspective */
+  padding: 2rem 0; /* Minimal padding */
+  perspective: 2000px;
+  overflow: visible;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  padding-top: 5vh;        /* Moved MUCH higher to prevent bottom cutoff */
+  justify-content: center;
 }
 
 .career-cards-wrapper {
@@ -731,10 +732,11 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
   width: 100%;
   max-width: 900px;
   margin: 0 auto;
-  height: 700px;
+  height: min(750px, 65vh); /* Slightly more room for taller cards */
   display: flex;
   align-items: center;
   justify-content: center;
+  perspective: 1200px; /* Required for visual depth of translateZ */
 }
 
 .career-cards {
@@ -753,21 +755,82 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
   transition: box-shadow 0.4s ease, border-color 0.4s ease;
 }
 
-/* Stack depth offsets */
-.career-card:nth-child(1) { z-index: 4; transform: translateY(0) scale(1) translateZ(0); }
-.career-card:nth-child(2) { z-index: 3; transform: translateY(40px) scale(0.96) translateZ(-50px); }
-.career-card:nth-child(3) { z-index: 2; transform: translateY(80px) scale(0.92) translateZ(-100px); }
-.career-card:nth-child(4) { z-index: 1; transform: translateY(120px) scale(0.88) translateZ(-150px); }
+/* GSAP will now handle all positioning; resetting static CSS transforms to avoid conflicts */
+.career-card:nth-child(1),
+.career-card:nth-child(2),
+.career-card:nth-child(3),
+.career-card:nth-child(4) {
+  transform: none;
+}
+
+.career-card.is-hidden {
+  pointer-events: none;
+  visibility: hidden;
+}
 
 .career-card-inner {
   background: var(--clr-bg-card);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 3.5rem 3rem;
+  padding: 2rem 2.5rem;
   border-radius: var(--r-lg);
   position: relative;
   overflow: hidden;
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.1); /* Slightly more bouncy for horizontal feel */
+  transform: rotateY(0deg);
+}
+
+/* ── Flip Card Configuration ───────────────────── */
+.flip-card {
+  perspective: 1500px;
+  cursor: pointer;
+}
+
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg) !important;
+}
+
+.flip-front, .flip-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: var(--r-lg);
+  padding: 2rem 2.5rem;
+}
+
+.flip-front {
+  z-index: 2;
+  transform: rotateY(0deg);
+  background: var(--clr-bg-card); /* Ensure match with parent */
+}
+
+.flip-back {
+  transform: rotateY(180deg);
+  background: rgba(168, 85, 247, 0.08);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.back-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 1.5rem;
+}
+
+.tag {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--clr-accent-2);
+  border: 1px solid rgba(34, 211, 238, 0.3);
+  padding: 2px 10px;
+  border-radius: 4px;
+  background: rgba(34, 211, 238, 0.05);
 }
 
 .career-card.active-card .career-card-inner {
@@ -797,30 +860,19 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
   letter-spacing: -0.05em;
 }
 
-.career-card-inner {
-  background: var(--clr-bg-card);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 3.5rem 3rem;
-  border-radius: var(--r-lg);
-  position: relative;
-  overflow: hidden;
-}
 
-.active-card {
-  box-shadow: 0 0 40px rgba(168, 85, 247, 0.4);
-  border-color: var(--clr-accent);
-}
-
-.step-number {
-  font-family: var(--font-mono);
-  font-size: 3.5rem;
-  font-weight: 700;
-  color: rgba(168, 85, 247, 0.15);
-  line-height: 1;
-  margin-bottom: 1.5rem;
-  letter-spacing: -0.05em;
+@media (max-width: 768px) {
+  .career-cards-wrapper {
+    height: 500px;
+  }
+  .career-card-inner {
+    padding: 2rem 1.5rem;
+  }
+  .step-number {
+    font-size: 2.5rem;
+    top: 1rem;
+    right: 1.5rem;
+  }
 }
 
 .step-title {
