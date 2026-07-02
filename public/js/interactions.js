@@ -247,96 +247,123 @@ window.addEventListener('load', () => {
   const careerSection = document.querySelector('.career-section');
 
   if (careerSection && careerCards.length) {
+    let mm = gsap.matchMedia();
 
-    // Base stacking positions (must match design intent)
-    // Each card's slot: Y offset, scale, Z offset (z in GSAP = translateZ)
-    const stackBase = careerCards.map((_, i) => ({
-      y:     i * 30,
-      scale: 1 - i * 0.04,
-      z:     -(i * 40),
-    }));
+    // Desktop: Stacked scroll peel animation (> 900px)
+    mm.add("(min-width: 901px)", () => {
+      // Base stacking positions (must match design intent)
+      // Each card's slot: Y offset, scale, Z offset (z in GSAP = translateZ)
+      const stackBase = careerCards.map((_, i) => ({
+        y:     i * 30,
+        scale: 1 - i * 0.04,
+        z:     -(i * 40),
+      }));
 
-    // Set initial state via GSAP to ensure smooth start
-    careerCards.forEach((card, i) => {
-      gsap.set(card, {
-        filter:  i === 0 ? 'blur(0px)' : 'blur(4px)',
-        opacity: i === 0 ? 1 : 0.8,
-        y:       stackBase[i].y + 150, // Nudged down initially to animate in
-        scale:   stackBase[i].scale,
-        z:       stackBase[i].z,
+      // Set initial state via GSAP to ensure smooth start
+      careerCards.forEach((card, i) => {
+        gsap.set(card, {
+          filter:  i === 0 ? 'blur(0px)' : 'blur(4px)',
+          opacity: i === 0 ? 1 : 0.8,
+          y:       stackBase[i].y + 150, // Nudged down initially to animate in
+          scale:   stackBase[i].scale,
+          z:       stackBase[i].z,
+        });
+      });
+
+      // Each step occupies 1 unit of timeline time
+      const stepDuration = 1;
+      const leadIn = 0.5; // Small pause at the start to ensure visibility before flip
+      const careerTL = gsap.timeline({
+        scrollTrigger: {
+          trigger:            careerSection,
+          start:              'top top',
+          end:                `+=${(careerCards.length + leadIn) * 700}`, // px of scroll
+          pin:                true,
+          scrub:              1.2,
+          invalidateOnRefresh: true,
+        }
+      });
+
+      // 0. LEAD-IN: Move the entire stack UP into full view
+      careerCards.forEach((card, i) => {
+        careerTL.to(card, {
+          y: stackBase[i].y,
+          duration: leadIn,
+          ease: 'power2.out'
+        }, 0);
+      });
+
+      careerCards.forEach((card, i) => {
+        const isLast = i === careerCards.length - 1;
+        const tPos   = leadIn + (i * stepDuration);
+
+        if (!isLast) {
+          // ── 1. FLY the current card away ──────────────────────
+          careerTL.to(card, {
+            y:             -200,
+            opacity:       0,
+            scale:         1.08,
+            z:             100,
+            filter:        'blur(18px)',
+            pointerEvents: 'none',
+            ease:          'power1.inOut',
+            duration:      stepDuration,
+            onStart:          () => card.classList.remove('active-card'),
+            onReverseComplete: () => card.classList.add('active-card'),
+          }, tPos);
+
+          // ── 2. ADVANCE remaining cards to their new position ──
+          careerCards.slice(i + 1).forEach((nextCard, nextIndex) => {
+            // nextIndex 0 = immediately next card (becomes active)
+            const newSlot = nextIndex; 
+
+            careerTL.to(nextCard, {
+              y:       stackBase[newSlot].y,
+              scale:   stackBase[newSlot].scale,
+              z:       stackBase[newSlot].z,
+              filter:  newSlot === 0 ? 'blur(0px)' : 'blur(4px)',
+              opacity: newSlot === 0 ? 1           : 0.8,
+              ease:    'power1.inOut',
+              duration: stepDuration,
+              onStart:          () => newSlot === 0 && nextCard.classList.add('active-card'),
+              onReverseComplete: () => newSlot === 0 && nextCard.classList.remove('active-card'),
+            }, tPos);
+          });
+
+        } else {
+          // Last card: ensure it becomes active when reached
+          careerTL.to(card, {
+            filter:   'blur(0px)',
+            opacity:  1,
+            duration: stepDuration * 0.1,
+            onStart:          () => card.classList.add('active-card'),
+            onReverseComplete: () => card.classList.remove('active-card'),
+          }, tPos);
+        }
       });
     });
 
-    // Each step occupies 1 unit of timeline time
-    const stepDuration = 1;
-    const leadIn = 0.5; // Small pause at the start to ensure visibility before flip
-    const careerTL = gsap.timeline({
-      scrollTrigger: {
-        trigger:            careerSection,
-        start:              'top top',
-        end:                `+=${(careerCards.length + leadIn) * 700}`, // px of scroll
-        pin:                true,
-        scrub:              1.2,
-        invalidateOnRefresh: true,
-      }
-    });
+    // Mobile: Simple scroll triggers and vertical layouts (<= 900px)
+    mm.add("(max-width: 900px)", () => {
+      // Clear properties to allow CSS normal flex/block styling to render
+      careerCards.forEach((card) => {
+        gsap.set(card, { clearProps: "all" });
+      });
 
-    // 0. LEAD-IN: Move the entire stack UP into full view
-    careerCards.forEach((card, i) => {
-      careerTL.to(card, {
-        y: stackBase[i].y,
-        duration: leadIn,
-        ease: 'power2.out'
-      }, 0);
-    });
-
-    careerCards.forEach((card, i) => {
-      const isLast = i === careerCards.length - 1;
-      const tPos   = leadIn + (i * stepDuration);
-
-      if (!isLast) {
-        // ── 1. FLY the current card away ──────────────────────
-        careerTL.to(card, {
-          y:             -200,
-          opacity:       0,
-          scale:         1.08,
-          z:             100,
-          filter:        'blur(18px)',
-          pointerEvents: 'none',
-          ease:          'power1.inOut',
-          duration:      stepDuration,
-          onStart:          () => card.classList.remove('active-card'),
-          onReverseComplete: () => card.classList.add('active-card'),
-        }, tPos);
-
-        // ── 2. ADVANCE remaining cards to their new position ──
-        careerCards.slice(i + 1).forEach((nextCard, nextIndex) => {
-          // nextIndex 0 = immediately next card (becomes active)
-          const newSlot = nextIndex; 
-
-          careerTL.to(nextCard, {
-            y:       stackBase[newSlot].y,
-            scale:   stackBase[newSlot].scale,
-            z:       stackBase[newSlot].z,
-            filter:  newSlot === 0 ? 'blur(0px)' : 'blur(4px)',
-            opacity: newSlot === 0 ? 1           : 0.8,
-            ease:    'power1.inOut',
-            duration: stepDuration,
-            onStart:          () => newSlot === 0 && nextCard.classList.add('active-card'),
-            onReverseComplete: () => newSlot === 0 && nextCard.classList.remove('active-card'),
-          }, tPos);
+      // Standard scroll reveal for mobile
+      careerCards.forEach((card) => {
+        gsap.from(card, {
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 85%',
+            toggleActions: 'play none none none'
+          },
+          opacity: 0,
+          y: 40,
+          duration: 0.8,
+          ease: 'power2.out'
         });
-
-      } else {
-        // Last card: ensure it becomes active when reached
-        careerTL.to(card, {
-          filter:   'blur(0px)',
-          opacity:  1,
-          duration: stepDuration * 0.1,
-          onStart:          () => card.classList.add('active-card'),
-          onReverseComplete: () => card.classList.remove('active-card'),
-        }, tPos);
-      }
+      });
     });
   }
 
@@ -351,10 +378,10 @@ window.addEventListener('load', () => {
       scrub: 1.5 // Significant weight to create that cinematic follow
     },
     opacity: 0, 
-    y: 180, 
-    rotateX: 25, // More aggressive 3D tilt
-    scale: 0.8,
-    stagger: 0.15, 
+    y: window.innerWidth > 768 ? 180 : 40, // Reduced translation on mobile to prevent overlay overlaps
+    rotateX: window.innerWidth > 768 ? 25 : 10, // Milder tilt on mobile
+    scale: 0.85,
+    stagger: window.innerWidth > 768 ? 0.15 : 0.05, 
     ease: 'power3.out',
   });
 
@@ -370,8 +397,8 @@ window.addEventListener('load', () => {
     },
     opacity: 0, 
     scale: 0.6, 
-    y: 100, 
-    rotateY: -15,
+    y: window.innerWidth > 768 ? 100 : 30, // Reduced translation on mobile
+    rotateY: window.innerWidth > 768 ? -15 : -5,
     stagger: 0.05, 
     ease: 'power3.out',
   });

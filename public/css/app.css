@@ -25,7 +25,7 @@
 
   --clr-text-h:       #ffffff;
   --clr-text:         #cbd5e1;
-  --clr-text-dim:     #64748b;
+  --clr-text-dim:     #94a3b8;
   --clr-text-dark:    #e2e8f0; /* Adapted for forced dark mode */
   --clr-text-dark-2:  #94a3b8;
 
@@ -343,10 +343,18 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
 .mobile-menu {
   display: none;
   flex-direction: column;
-  padding: 1.5rem var(--container-pad);
-  background: rgba(13,14,15,0.97);
+  position: fixed;
+  top: var(--nav-h);
+  left: 0;
+  width: 100%;
+  height: calc(100vh - var(--nav-h));
+  background: rgba(5, 5, 8, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 2.5rem var(--container-pad);
   border-top: 1px solid var(--clr-border);
-  gap: 0.5rem;
+  gap: 1.5rem;
+  z-index: 999;
 }
 .mobile-menu.open { display: flex; }
 .mobile-nav-link {
@@ -863,7 +871,7 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
 
 @media (max-width: 768px) {
   .career-cards-wrapper {
-    height: 500px;
+    height: auto !important;
   }
   .career-card-inner {
     padding: 2rem 1.5rem;
@@ -1074,27 +1082,28 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
   margin-bottom: 4rem;
 }
 .testimonial-card {
-  background: #fff;
-  border: 1px solid rgba(0,0,0,0.08);
+  background: var(--clr-bg-card);
+  border: 1px solid var(--clr-border);
   border-radius: var(--r-lg);
   padding: 2rem;
   position: relative;
-  transition: transform var(--t-mid), box-shadow var(--t-mid);
-  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  transition: transform var(--t-mid), box-shadow var(--t-mid), border-color var(--t-mid);
+  box-shadow: var(--shadow-md);
 }
 .testimonial-card:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
+  border-color: var(--clr-accent);
+  box-shadow: 0 0 30px rgba(168, 85, 247, 0.15);
 }
 .testimonial-quote-mark {
   font-size: 4rem; line-height: 0.8;
-  color: var(--clr-accent); opacity: 0.25;
+  color: var(--clr-accent); opacity: 0.4;
   font-family: Georgia, serif;
   margin-bottom: 0.5rem;
 }
 .testimonial-quote {
   font-size: 0.95rem; line-height: 1.75;
-  color: var(--clr-text-dark-2);
+  color: var(--clr-text);
   font-style: italic;
   margin-bottom: 1.5rem;
 }
@@ -1110,7 +1119,7 @@ a:hover ~ .cursor-dot, button:hover ~ .cursor-dot { width: 10px; height: 10px; }
   flex-shrink: 0;
 }
 .author-info { flex: 1; }
-.author-name { display: block; font-weight: 700; font-size: 0.85rem; color: var(--clr-text-dark); }
+.author-name { display: block; font-weight: 700; font-size: 0.85rem; color: var(--clr-text-h); }
 .author-role { font-size: 0.75rem; color: var(--clr-text-dim); font-family: var(--font-mono); }
 .author-company {
   font-family: var(--font-mono); font-size: 0.72rem;
@@ -1426,6 +1435,34 @@ textarea.form-control { resize: vertical; min-height: 140px; }
   .content-grid { grid-template-columns: 1fr; }
   .contact-grid { grid-template-columns: 1fr; }
   .portfolio-page-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* Responsive career section overrides */
+  .career-section {
+    padding: 4rem 0;
+    height: auto;
+    min-height: auto;
+  }
+  .career-cards-wrapper {
+    height: auto !important;
+    display: block;
+  }
+  .career-cards {
+    position: relative;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .career-card {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    width: 100% !important;
+    transform: none !important;
+  }
+  .career-card-inner {
+    transform: none !important;
+  }
 }
 
 @media (max-width: 768px) {
