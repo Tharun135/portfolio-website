@@ -21,3 +21,9 @@ storage/framework/sessions/*
 storage/framework/views/*
 storage/logs/*
 bootstrap/cache/*.php
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
